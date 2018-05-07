@@ -159,12 +159,13 @@ def nav_bar():
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
-			<a href="#home">Home</a>
-			<a href="#myQuestionnaire">MyQuestionnaire</a>
-			<a href="#search">Search</a>
+			<a href="index.py">Home</a>
+			<a href="myQuestionnaire.py">My Questionnaire</a>
+			<a href="search.py">Search</a>
+			<a href="createquestion.py">Create Questionnaire</a>
 		</div>
 		<div class="right">
-			<a href="#signin">Sign in</a>
+			<a href="signin.py">Sign in</a>
 			<a href="signup.py">Sign up</a>
 		</div>
 		''')
