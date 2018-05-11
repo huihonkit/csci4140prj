@@ -108,7 +108,23 @@ h4{
 }
 
 .del{
-  background-color: #2F4F4F;
+  background-color: transparent;
+  border: none;
+  margin-top:10px;
+  width:50px;
+  height: 50px;
+}
+
+.delq{
+  color:red;
+  margin-top:10px;
+  border: #ccc 1px solid;
+  border-radius:10px;
+  width:70px;
+  height: 40px;
+}
+
+.add{
   margin-top:10px;
   border: #ccc 1px solid;
   border-radius:50%;
@@ -117,5 +133,10 @@ h4{
 }
 
 h2{
-  color: #f2f2f2;
+  color: #808080;
+}
+
+table{
+  width: 50%;
+  margin: auto;
 }

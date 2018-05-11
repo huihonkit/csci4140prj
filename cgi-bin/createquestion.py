@@ -84,8 +84,8 @@ def question():
 		<option value="social">Social</option>
 		</select>
 		<br>
-		<h4>Mark<button disabled title="Higher mark = Higher priority">?</button></h4>
-		<input class="input3" type = 'number' name = 'mark'></input>
+		<h4>Extra Mark<button disabled title="Higher mark = Higher priority">?</button></h4>
+		<input class="input3" type = 'number' name = 'mark' value=0 min="0"></input>
 		<br>
 		<input type = 'submit' class='qs' name='qs' value = 'create'></input>
 		<button class="plus" id="plus"><h2>+</h2></button>
