@@ -110,7 +110,7 @@ def body():
 	c.execute('select * from question where uid=%d' % (myuserid)) 
 	Qs = c.fetchall()
 	for row in Qs:
-		print('<a href="http://localhost:8080/cgi-bin/Qstat.py?targetQ=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><i>&nbsp;&nbsp;%s</i><br><span style="font-size:24px">&nbsp;&nbsp;%s</span></div><br>' % (row[0], row[7], row[5]))
+		print('<a href="http://localhost:8080/cgi-bin/Qstat.py?targetQ=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><i>&nbsp;&nbsp;%s&nbsp;&nbsp;&nbsp;%d people done</i><br><span style="font-size:24px">&nbsp;&nbsp;%s</span></div><br>' % (row[0], row[7], row[9], row[5]))
 
 
 
