@@ -30,11 +30,13 @@ def signup():
 	print('''
 		<div class="signup">
 		<h1>Create a New Account</h1>
-		<form action="/cgi-bin/checksignup.py method="post">
+		<form action="/cgi-bin/checkSignup.py" method="post">
 		<br>
 		<input class="input1" type="text" placeholder="Username" name="username" required>
 		<br>
 		<input class="input1" type="text" placeholder="Password" name="password" required>
+		<br>
+		<input class="input1" type="text" placeholder="Retype password" name="repassword" required>
 		<br>
 		<input class="input2" type ="submit" value ="Sign up"></input>
 		</form>

@@ -14,6 +14,62 @@ import json
 
 cgitb.enable()
 
+def get_cookie():
+	global cuid
+	if 'HTTP_COOKIE' in os.environ:
+		cookie_string = os.environ.get('HTTP_COOKIE')
+		c = Cookie.SimpleCookie()
+		c.load(cookie_string)
+		try:
+			data = c['csci414064769'].value
+			conn = sqlite3.connect('test.db')
+			c = conn.cursor()
+			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
+			result = c.fetchone()
+			cuid=result[0]
+			if result is not None:
+				c.execute("SELECT uname FROM user WHERE uid = ?", (result[0],))
+				username = c.fetchone()				
+				nav_bar2(username[0])
+			else:
+				nav_bar1()
+			conn.close()
+		except:
+			nav_bar1()
+
+
+
+def nav_bar1():
+	print('<div class="navbar">')
+	print('''
+		<div class="left">
+			<a href="index.py">Home</a>
+			<a href="search.py">Search</a>
+		</div>
+		<div class="right">
+			<a href="login.py">Sign in</a>
+			<a href="signup.py">Sign up</a>
+		</div>
+		''')
+	print('</div>')
+
+def nav_bar2(uname):
+	print('<div class="navbar">')
+	print('''
+		<div class="left">
+			<a href="index.py">Home</a>
+			<a href="myQuestionnaire.py">My Questionnaire</a>
+			<a href="search.py">Search</a>
+			<a href="createquestion.py">Create Questionnaire</a>
+		</div>
+		<div class="right">''')
+	print("<a>"+uname+"</a>")
+	print('''
+			<a href="logout.py">Logout</a>
+		</div>
+		''')
+	print('</div>')
+
 def htmlTop():
 	print("Content-type:text/html\n\n")
 	print("<!DOCTYPE html>")
@@ -22,8 +78,7 @@ def htmlTop():
 	print("<meta charset='utf-8'/>")
 	print("<title>prj</title>")
 	print('<link type="text/css" rel="stylesheet" href="/css/style1.css" />')
-	print('<script src="/js/jquery-3.3.1.min.js"></script>')
-	print('<script src="/js/createQuestion.js"></script>')
+	print('<script src="/js/jquery-3.3.1.min.js"></script>')	
 	print("</head>")
 	print("<body>")
 
@@ -78,10 +133,8 @@ def question():
 		''')
 
 def printQ():
-	#form=cgi.FieldStorage()
-	#qid = form.getvalue('qid')
-	qid=1
-	cuid=2 #current logined user id
+	global qid,cuid
+	get_cookie()
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
 	c.execute('CREATE TABLE IF NOT EXISTS answer(qid int, uid int, answer json, time text);')
@@ -115,8 +168,9 @@ def printQ():
 	conn.close()
 
 if __name__ == "__main__":
-	htmlTop()
-	nav_bar()
+	qid=-1
+	cuid=-1
+	htmlTop()	
 	printQ()
 	htmlTail()
 	

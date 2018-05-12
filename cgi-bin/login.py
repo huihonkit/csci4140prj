@@ -56,7 +56,7 @@ def start():
 			else:
 				conn = sqlite3.connect('test.db')
 				c = conn.cursor()
-				c.execute("SELECT mess FROM message")
+				c.execute("SELECT message FROM message")
 				result = c.fetchone()
 				if result is not None:
 					ck = Cookie.SimpleCookie()
@@ -83,4 +83,8 @@ def start():
 			back()
 			htmlTail()
 
-start()
+#start()
+htmlTop()
+login_form()
+back()
+htmlTail()

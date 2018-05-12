@@ -1,0 +1,12 @@
+.Qblock{
+	border-width: 2px;
+	border-radius: 15px;
+	border-style: dashed;
+	border-color: #2F4F4F;
+	background-color: #F0FFF0;
+	width: 50%;
+	margin: 0 auto;
+}
+.Qblock:hover {
+	border-style: solid;
+}
