@@ -13,7 +13,7 @@ table user
 uid int, uname text, password text, mark int
 
 table question
-use_mark int, qid int, uid int, num_question int, question json, time text, des text, title text, category text
+qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json
 
 table answer
 qid int, uid int, answer json, time text
