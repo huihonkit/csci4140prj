@@ -99,6 +99,10 @@ def questionnaire():
 		</div>
 		''')
 
+def createDB():
+	c.execute('''CREATE TABLE IF NOT EXISTS question
+		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json)''')
+	
 htmlTop()
 get_cookie()
 questionnaire()
