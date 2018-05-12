@@ -35,7 +35,7 @@ def check():
 		c.execute("INSERT INTO message VALUES (?)", (msg,))
 		conn.commit()
 		conn.close()
-		print("<meta http-equiv='refresh' content='0; url=/cgi-bin/create.py'>")
+		print("<meta http-equiv='refresh' content='0; url=/cgi-bin/signup.py'>")
 	else:
 		password = form['password'].value
 		repassword = form['repassword'].value
@@ -44,18 +44,18 @@ def check():
 			c.execute("INSERT INTO message VALUES (?)", (msg,))
 			conn.commit()
 			conn.close()
-			print("<meta http-equiv='refresh' content='0; url=/cgi-bin/create.py'>")
+			print("<meta http-equiv='refresh' content='0; url=/cgi-bin/signup.py'>")
 		else:
 			username = form['username'].value
 
 			#conn = sqlite3.connect('test.db')
 			#c = conn.cursor()
 			uname = (username,)
-			command = "SELECT password FROM user WHERE username = ?"
+			command = "SELECT password FROM user WHERE uname = ?"
 			c.execute(command,uname)
 			result = c.fetchone()
 			if result is None:
-				command = "SELECT username FROM user WHERE uid = ?"
+				command = "SELECT uname FROM user WHERE uid = ?"
 				while 1:
 					uid = rand_uid()
 					userid = (uid,)
@@ -76,7 +76,7 @@ def check():
 				c.execute("INSERT INTO message VALUES (?)", (msg,))
 				conn.commit()
 				conn.close()
-				print("<meta http-equiv='refresh' content='0; url=/cgi-bin/create.py'>")
+				print("<meta http-equiv='refresh' content='0; url=/cgi-bin/signup.py'>")
 
 if 'HTTP_COOKIE' in os.environ:
 	cookie_string = os.environ.get('HTTP_COOKIE')
