@@ -55,9 +55,15 @@ def test(uid):
 	category = obj["category"]
 	mark = obj["mark"]
 	num = obj["num"]
+	total = obj["total"]
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
-	c.execute("INSERT INTO question(uid, num_question, use_mark, time, title, des, category, question, num_done) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (uid, num, mark, time, title, des, category, myjson, 0))
+	c.execute("INSERT INTO question(uid, num_question, use_mark, time, title, des, category, question, num_done) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (uid, num, mark, time, title, des, category, myjson, 0))
+	conn.commit()
+	c.execute("SELECT mark FROM user WHERE uid = ?", (uid,))
+	result = c.fetchone()
+	total = result[0] - total
+	c.execute("UPDATE user SET mark=? WHERE uid = ?", (total, uid))
 	conn.commit()
 	conn.close()
 	print("<meta http-equiv='refresh' content='0; url=/cgi-bin/index.py'>")

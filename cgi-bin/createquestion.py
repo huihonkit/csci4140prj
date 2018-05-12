@@ -28,13 +28,6 @@ def htmlTail():
 	print("</body>")
 	print("</html>")
 
-def createDB():
-	conn = sqlite3.connect('test.db')
-	c = conn.cursor()
-	c.execute('''CREATE TABLE IF NOT EXISTS question
-		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json, num_done integer)''')
-	conn.close()
-
 def get_cookie():
 	if 'HTTP_COOKIE' in os.environ:
 		cookie_string = os.environ.get('HTTP_COOKIE')
@@ -47,16 +40,16 @@ def get_cookie():
 			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
 			result = c.fetchone()
 			if result is not None:
-				c.execute("SELECT uname FROM user WHERE uid = ?", (result[0],))
+				c.execute("SELECT uname, mark FROM user WHERE uid = ?", (result[0],))
 				username = c.fetchone()
-				nav_bar(username[0])
+				nav_bar(username[0],username[1])
 			else:
 				print("<meta http-equiv='refresh' content='0; url=/cgi-bin/index.py'>")
 			conn.close()
 		except:
 			print("<meta http-equiv='refresh' content='0; url=/cgi-bin/index.py'>")
 
-def nav_bar(uname):
+def nav_bar(uname, mark):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
@@ -67,6 +60,7 @@ def nav_bar(uname):
 		</div>
 		<div class="right">''')
 	print("<a>"+uname+"</a>")
+	print("<a>Mark:"+str(mark)+"</a>")
 	print('''
 			<a href="logout.py">Logout</a>
 		</div>
@@ -104,10 +98,6 @@ def question():
 		</div>
 		''')
 
-#x = document.forms["myform"][""].value;
-#x = document.forms["myform"][""].value;
-#x = document.forms["myform"][""].value;
-createDB()
 htmlTop()
 get_cookie()
 question()
