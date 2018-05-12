@@ -1,4 +1,5 @@
 count = 0;
+total = 0;
 
 function check(){
     var flag = 1;
@@ -72,12 +73,12 @@ function check(){
             if(flag == 0){
                 break;
             }
-            //console.log(dict);
         }
         if(flag == 1){
             if(time == ""){
                 alert("Closed Time must be filled out");
             }
+            //send
             else{
                 questionnaire["title"] = title;
                 questionnaire["description"] = des;
@@ -85,6 +86,14 @@ function check(){
                 questionnaire["time"] = time;
                 questionnaire["category"] = category;
                 questionnaire["mark"] = mark;
+                questionnaire["num"] = count;
+
+                var $form = $("<form action='/cgi-bin/checkQuestion.py' method='post'></form>");
+                var $t = $("<input type='text' name='data'>");
+                $t.val(JSON.stringify(questionnaire));
+                $form.append($t);
+                $(document.body).append($form);
+                $form.submit();
             }
         }
     }
@@ -145,6 +154,7 @@ function delq(obj){
         var div = $(obj).parent().parent();
         count = count - 1;
         div.remove();
+        markchange();
     }
 }
 
@@ -207,6 +217,15 @@ function addquestion(){
     div = div + "</div>";
     $(div).insertBefore($(hr));
     count = count + 1;
+    markchange();
+}
+
+function markchange(){
+    var extra = document.getElementsByName("mark")[0].value;
+    total = 3 * count + parseInt(extra);
+    var mark = document.getElementById("total");
+    mark.innerText = "Total Mark: " + total;
+    $(mark).append('<button disabled title="Total mark = 3*number of question + extra mark">?</button>');
 }
 
 document.addEventListener("DOMContentLoaded", function(event){
@@ -215,4 +234,6 @@ document.addEventListener("DOMContentLoaded", function(event){
     x.addEventListener('click', addquestion);
     var y = document.getElementsByClassName('qs')[0];
     y.addEventListener('click', check);
+    var extra = document.getElementsByName("mark")[0];
+    extra.addEventListener('change', markchange);
 });

@@ -42,7 +42,7 @@ def createDB():
 	#conn.commit()
 	#c.execute('''CREATE TABLE edit
 	#		(sid text, version text)''')
-	c.execute('''CREATE TABLE question
+	c.execute('''CREATE TABLE IF NOT EXISTS question
 		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json)''')
 	conn.close()
 
@@ -87,6 +87,7 @@ def question():
 		<h4>Extra Mark<button disabled title="Higher mark = Higher priority">?</button></h4>
 		<input class="input3" type = 'number' name = 'mark' value=0 min="0"></input>
 		<br>
+		<h4 id="total">Total Mark: <button disabled title="Total mark = 3*number of question + extra mark">?</button></h4>
 		<input type = 'submit' class='qs' name='qs' value = 'create'></input>
 		<button class="plus" id="plus"><h2>+</h2></button>
 		</div>
@@ -95,7 +96,7 @@ def question():
 #x = document.forms["myform"][""].value;
 #x = document.forms["myform"][""].value;
 #x = document.forms["myform"][""].value;
-#createDB()
+createDB()
 htmlTop()
 nav_bar()
 question()
