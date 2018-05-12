@@ -19,4 +19,4 @@ table answer
 qid int, uid int, answer json, time text
 
 table session
-uid int, sid int
+sid int, uid int
