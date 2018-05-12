@@ -55,9 +55,8 @@ def nav_bar1():
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
-			<a href="#home">Home</a>
-			<a href="#myQuestionnaire">MyQuestionnaire</a>
-			<a href="#search">Search</a>
+			<a href="index.py">Home</a>
+			<a href="search.py">Search</a>
 		</div>
 		<div class="right">
 			<a href="login.py">Sign in</a>
@@ -71,9 +70,10 @@ def nav_bar2(uname):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
-			<a href="#home">Home</a>
-			<a href="#myQuestionnaire">MyQuestionnaire</a>
-			<a href="#search">Search</a>
+			<a href="index.py">Home</a>
+			<a href="myQuestionnaire.py">My Questionnaire</a>
+			<a href="search.py">Search</a>
+			<a href="createquestion.py">Create Questionnaire</a>
 		</div>
 		<div class="right">''')
 	print("<a>"+uname+"</a>")
