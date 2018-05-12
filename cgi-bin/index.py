@@ -40,9 +40,9 @@ def get_cookie():
 			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
 			result = c.fetchone()
 			if result is not None:
-				c.execute("SELECT uname FROM user WHERE uid = ?", (result[0],))
+				c.execute("SELECT uname, mark FROM user WHERE uid = ?", (result[0],))
 				username = c.fetchone()
-				nav_bar2(username[0])
+				nav_bar2(username[0], username[1])
 			else:
 				nav_bar1()
 			conn.close()
@@ -66,7 +66,7 @@ def nav_bar1():
 	print('</div>')
 
 
-def nav_bar2(uname):
+def nav_bar2(uname, mark):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
@@ -77,12 +77,12 @@ def nav_bar2(uname):
 		</div>
 		<div class="right">''')
 	print("<a>"+uname+"</a>")
+	print("<a>Mark:"+str(mark)+"</a>")
 	print('''
 			<a href="logout.py">Logout</a>
 		</div>
 		''')
 	print('</div>')
-
 
 def questionnaire():
 	print('''
@@ -98,10 +98,6 @@ def questionnaire():
 			questionnaire
 		</div>
 		''')
-
-def createDB():
-	c.execute('''CREATE TABLE IF NOT EXISTS question
-		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json)''')
 	
 htmlTop()
 get_cookie()

@@ -80,20 +80,27 @@ function check(){
             }
             //send
             else{
-                questionnaire["title"] = title;
-                questionnaire["description"] = des;
-                questionnaire["question"] = array;
-                questionnaire["time"] = time;
-                questionnaire["category"] = category;
-                questionnaire["mark"] = mark;
-                questionnaire["num"] = count;
-
-                var $form = $("<form action='/cgi-bin/checkQuestion.py' method='post'></form>");
-                var $t = $("<input type='text' name='data'>");
-                $t.val(JSON.stringify(questionnaire));
-                $form.append($t);
-                $(document.body).append($form);
-                $form.submit();
+                var right = document.getElementsByClassName("right")[0];
+                var umark = right.getElementsByTagName("a")[1].innerText.split(":")[1];
+                if(umark >= total){
+                    questionnaire["title"] = title;
+                    questionnaire["description"] = des;
+                    questionnaire["question"] = array;
+                    questionnaire["time"] = time;
+                    questionnaire["category"] = category;
+                    questionnaire["mark"] = mark;
+                    questionnaire["num"] = count;
+                    questionnaire["total"] = total;
+                    var $form = $("<form action='/cgi-bin/checkQuestion.py' method='post'></form>");
+                    var $t = $("<input type='text' name='data'>");
+                    $t.val(JSON.stringify(questionnaire));
+                    $form.append($t);
+                    $(document.body).append($form);
+                    $form.submit();
+                }
+                else{
+                    alert("You don't have enough mark")
+                }
             }
         }
     }
