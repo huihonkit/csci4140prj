@@ -49,6 +49,10 @@ def check(sid):
 				c.execute("INSERT INTO session VALUES (?, ?)", (sid,result[1]))
 				conn.commit()
 				conn.close()
+
+				#set_cookie()
+
+
 				print('<script>alert("You have successfully logged in")</script>')
 				print("<meta http-equiv='refresh' content='0; url=/cgi-bin/index.py'>")
 			else:
@@ -61,7 +65,7 @@ def set_cookie():
 	while 1:
 		conn = sqlite3.connect('test.db')
 		c = conn.cursor()
-		sid = rand_sid()
+		sid = int(rand_sid())
 		seid = (sid,)
 		c.execute(command,seid)
 		result1 = c.fetchone()
@@ -73,7 +77,7 @@ def set_cookie():
 	return sid
 
 
-sid = int(set_cookie())
+sid = set_cookie()
 htmlTop()
 check(sid)
 htmlTail()
