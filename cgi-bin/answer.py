@@ -43,13 +43,7 @@ def saveAnswer():
 
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
-	c.execute("SELECT num_done from question where qid=%d"%(int(qid)))
-	num_done=c.fetchone()
-	num_done=int(num_done[0])
-	num_done+=1
 	c.execute("insert into answer values('%d','%d','%s','%s')"%(int(qid),int(uid),data,t))
-	conn.commit()
-	c.execute("UPDATE question SET num_done = %d WHERE qid = %d"%(num_done,int(qid)))
 	conn.commit()
 	conn.close()
 

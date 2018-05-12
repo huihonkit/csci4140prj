@@ -124,10 +124,7 @@ def printQ():
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
 	c.execute('CREATE TABLE IF NOT EXISTS answer(qid int, uid int, answer json, time text);')
-
-	qid=2 #*******************************need to delete**********************************
-	
-	c.execute('select * from question where qid="%d"'%qid) 
+	c.execute('select * from question where qid="1"') #get qid from index page. ***need change***
 	question=c.fetchone() #get questionaire from database
 	
 	print("<br><br><br>")
@@ -146,35 +143,11 @@ def printQ():
 		print ("%d. "%(i+1))
 		print(q[i]["question"])
 		print("<br>")
-		if q[i]["type"]=="mc": #print multiple question			
+		if q[i]["type"]=="multiple": #print multiple question			
 			for option in q[i]["answer"]:
-				print("<input type='radio' name='%d' value='%s' required>%s  </input>"%(i,option,option))
-		elif q[i]["type"]=="shortq":
+				print("<input type='radio' name='%d' value='%s' required>%s  "%(i,option,option))
+		elif q[i]["type"]=="shortQuestion":
 			print ("<input type='text' name='%d' required/>" %i)
-		elif q[i]["type"]=="longq":
-			print ("<textarea rows='4' cols='100' name='%d' required> </textarea>" %i)
-		elif q[i]["type"]=="checkbox":
-			for option in q[i]["answer"]:
-				print ("<input type='checkbox' name='%d' value='%s' >%s  </input>" %(i,option,option))
-		elif q[i]["type"]=="dropdown":
-			print ("<select name='%d'>"%i)
-			for option in q[i]["answer"]:				
-				print ("<option  value='%s'>%s</option>" %(option,option))
-			print ("</select>")
-		elif q[i]["type"]=="ratingscale":
-			mid=0;
-			if ((int(q[i]["scale"][0])+int(q[i]["scale"][1]))%2==0):
-				mid=(int(q[i]["scale"][0])+int(q[i]["scale"][1]))/2
-			else:
-				mid=(int(q[i]["scale"][0])+int(q[i]["scale"][1]))/2+1
-			print ('%s<input name="%d" type="range" min="%d" max="%d" value="%d" id="%d">%s' %(q[i]["label"][0],i,int(q[i]["scale"][0]),int(q[i]["scale"][1]),mid,i,q[i]["label"][1]))
-			print ("<p>Value: <span id='%dvalue'></span></p>"%(i))
-			print('''<script>var slider%d = document.getElementById("%d");
-					var output%d = document.getElementById("%dvalue");
-					output%d.innerHTML = slider%d.value; 					
-					slider%d.oninput = function() {
-					    output%d.innerHTML = this.value;
-					}</script>'''%(i,i,i,i,i,i,i,i))
 		print ("<br><br>")
 	print("<input type='submit' value='Submit'>")
 	print("</form>")
