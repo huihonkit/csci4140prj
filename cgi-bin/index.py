@@ -28,36 +28,6 @@ def htmlTail():
 
 
 
-def login():
-	print("<form action = '/cgi-bin/login.py' method = 'post'>")
-	print("<input type = 'submit' name = 's1' value = 'login'></input>")
-	print("</form>")
-
-
-
-def get_uid():
-	if 'HTTP_COOKIE' in os.environ:
-		cookie_string = os.environ.get('HTTP_COOKIE')
-		c = Cookie.SimpleCookie()
-		c.load(cookie_string)
-		try:
-			data = c['csci414064769'].value	
-			conn = sqlite3.connect('test.db')
-			c = conn.cursor()
-			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
-			result = c.fetchone()
-			conn.close()
-			return result[0]
-		except:
-			return ''
-
-
-def logout():
-	print("<form action = '/cgi-bin/logout.py' method = 'post'>")
-	print("<input type = 'submit' name = 's3' value = 'logout'></input>")
-	print("</form>")
-
-
 def get_cookie():
 	if 'HTTP_COOKIE' in os.environ:
 		cookie_string = os.environ.get('HTTP_COOKIE')
@@ -70,18 +40,12 @@ def get_cookie():
 			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
 			result = c.fetchone()
 			if result is not None:
-				print(result)
 				c.execute("SELECT uname FROM user WHERE uid = ?", (result[0],))
 				username = c.fetchone()
 				nav_bar2(username[0])
 			else:
 				nav_bar1()
 			conn.close()
-			#print("<h3>username:" + username[0] + "</h3>")
-			#update()
-			#show_image()
-			#upload()
-			#logout()
 		except:
 			nav_bar1()
 
@@ -122,23 +86,20 @@ def nav_bar2(uname):
 
 def questionnaire():
 	print('''
+		<div class="category">
+			<button>Art</button>
+			<button>Business</button>
+			<button>Education</button>
+			<button>Engineering</button>
+			<button>Science</button>
+			<button>Social</button>			
+		</div>
 		<div class="content">
-		questionnaire
-		questionnaire
-		questionnaire
-		questionnaire
-		questionnaire
-		questionnaire
-		questionnaire
-		questionnaire
-		questionnaire
-		questionnaire
+			questionnaire
 		</div>
 		''')
 
 htmlTop()
-#nav_bar()
-#questionnaire()
 get_cookie()
 questionnaire()
 htmlTail()
