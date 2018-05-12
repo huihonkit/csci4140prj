@@ -31,19 +31,8 @@ def htmlTail():
 def createDB():
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
-	#c.execute('''CREATE TABLE user
-	#		(uid integer PRIMARY KEY, uname text, password text, mark integer)''')
-	#c.execute("INSERT INTO user VALUES (?, ?, ?, ?)", ('BB55A6E76J', 'admin', 'admin', 0))
-	#conn.commit()
-	#c.execute('''CREATE TABLE session
-	#		(sid text, uid text)''')
-	#c.execute("INSERT INTO image VALUES (?, ?, ?, ?)", ('/image/a.jpg', 'public', 'BB55A6E76J', 1))
-	#c.execute("INSERT INTO image VALUES (?, ?, ?, ?)", ('/image/b.png', 'private', 'BB55A6E76J', 2))
-	#conn.commit()
-	#c.execute('''CREATE TABLE edit
-	#		(sid text, version text)''')
 	c.execute('''CREATE TABLE IF NOT EXISTS question
-		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json)''')
+		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json, num_done integer)''')
 	conn.close()
 
 def get_cookie():
@@ -111,7 +100,7 @@ def question():
 		<br>
 		<h4 id="total">Total Mark: <button disabled title="Total mark = 3*number of question + extra mark">?</button></h4>
 		<input type = 'submit' class='qs' name='qs' value = 'create'></input>
-		<button class="plus" id="plus"><h2>+</h2></button>
+		<button class="plus" id="plus"><h2>Add more question</h2></button>
 		</div>
 		''')
 
