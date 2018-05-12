@@ -88,7 +88,7 @@ def nav_bar2(uname):
 		''')
 	print('</div>')
 
-def testboarder():
+def body():
 	print('''
 		<br><br>
 		<center><h3>Here are all your questionnaires, %s</h3></center>
@@ -117,7 +117,7 @@ def testboarder():
 htmlTop()
 get_cookie()
 
-testboarder()
+body()
 
 #get_cookie()
 htmlTail()

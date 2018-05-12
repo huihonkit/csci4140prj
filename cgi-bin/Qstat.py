@@ -26,52 +26,47 @@ def htmlTop():
 def htmlTail():
 	print("</body>")
 	print("</html>")
-'''
-
-def get_uid():
-	if 'HTTP_COOKIE' in os.environ:
-		cookie_string = os.environ.get('HTTP_COOKIE')
-		c = Cookie.SimpleCookie()
-		c.load(cookie_string)
-		try:
-			data = c['csci414064769'].value	
-			conn = sqlite3.connect('test.db')
-			c = conn.cursor()
-			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
-			result = c.fetchone()
-			conn.close()
-			return result[0]
-		except:
-			return ''
 
 def get_cookie():
+	global myusername, myuserid
 	if 'HTTP_COOKIE' in os.environ:
 		cookie_string = os.environ.get('HTTP_COOKIE')
 		c = Cookie.SimpleCookie()
 		c.load(cookie_string)
 		try:
 			data = c['csci414064769'].value
-			error_msg()
 			conn = sqlite3.connect('test.db')
 			c = conn.cursor()
 			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
 			result = c.fetchone()
-			c.execute("SELECT username FROM user WHERE uid = ?", (result[0],))
-			username = c.fetchone()
+			if result is not None:
+				c.execute("SELECT uname FROM user WHERE uid = ?", (result[0],))
+				myuserid = result[0]
+				username = c.fetchone()
+				nav_bar2(username[0])
+				myusername = username[0]
+			else:
+				nav_bar1()
 			conn.close()
-			print("<h3>username:" + username[0] + "</h3>")
-			update()
-			show_image()
-			upload()
-			logout()
 		except:
-			error_msg()
-			login()
-			create()
-			show_image()
-			upload()
-'''
-def nav_bar():
+			nav_bar1()
+
+def nav_bar1():
+	print('<div class="navbar">')
+	print('''
+		<div class="left">
+			<a href="index.py">Home</a>
+			<a href="search.py">Search</a>
+		</div>
+		<div class="right">
+			<a href="login.py">Sign in</a>
+			<a href="signup.py">Sign up</a>
+		</div>
+		''')
+	print('</div>')
+
+
+def nav_bar2(uname):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
@@ -80,26 +75,29 @@ def nav_bar():
 			<a href="search.py">Search</a>
 			<a href="createquestion.py">Create Questionnaire</a>
 		</div>
-		<div class="right">
-			<a href="signin.py">Sign in</a>
-			<a href="signup.py">Sign up</a>
+		<div class="right">''')
+	print("<a>"+uname+"</a>")
+	print('''
+			<a href="logout.py">Logout</a>
 		</div>
 		''')
 	print('</div>')
 
-def testboarder():
+def body():
+	form = cgi.FieldStorage()
+	qid = int(form.getvalue('targetQ'))
 	print('''
 		<br><br>
-		<center><h3>Stat page</h3></center>
+		<center><h3>Stat page, qid=%d</h3></center>
 		
 		<br>
-		''')
+		''') % (qid)
 
 
 htmlTop()
-nav_bar()
+get_cookie()
 
-testboarder()
+body()
 
 #get_cookie()
 htmlTail()
