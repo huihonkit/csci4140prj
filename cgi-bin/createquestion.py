@@ -42,11 +42,32 @@ def createDB():
 	#conn.commit()
 	#c.execute('''CREATE TABLE edit
 	#		(sid text, version text)''')
-	c.execute('''CREATE TABLE question
+	c.execute('''CREATE TABLE IF NOT EXISTS question
 		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json)''')
 	conn.close()
 
-def nav_bar():
+def get_cookie():
+	if 'HTTP_COOKIE' in os.environ:
+		cookie_string = os.environ.get('HTTP_COOKIE')
+		c = Cookie.SimpleCookie()
+		c.load(cookie_string)
+		try:
+			data = c['csci414064769'].value
+			conn = sqlite3.connect('test.db')
+			c = conn.cursor()
+			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
+			result = c.fetchone()
+			if result is not None:
+				c.execute("SELECT uname FROM user WHERE uid = ?", (result[0],))
+				username = c.fetchone()
+				nav_bar(username[0])
+			else:
+				print("<meta http-equiv='refresh' content='0; url=/cgi-bin/index.py'>")
+			conn.close()
+		except:
+			print("<meta http-equiv='refresh' content='0; url=/cgi-bin/index.py'>")
+
+def nav_bar(uname):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
@@ -55,9 +76,10 @@ def nav_bar():
 			<a href="search.py">Search</a>
 			<a href="createquestion.py">Create Questionnaire</a>
 		</div>
-		<div class="right">
-			<a href="signin.py">Sign in</a>
-			<a href="signup.py">Sign up</a>
+		<div class="right">''')
+	print("<a>"+uname+"</a>")
+	print('''
+			<a href="logout.py">Logout</a>
 		</div>
 		''')
 	print('</div>')
@@ -87,6 +109,7 @@ def question():
 		<h4>Extra Mark<button disabled title="Higher mark = Higher priority">?</button></h4>
 		<input class="input3" type = 'number' name = 'mark' value=0 min="0"></input>
 		<br>
+		<h4 id="total">Total Mark: <button disabled title="Total mark = 3*number of question + extra mark">?</button></h4>
 		<input type = 'submit' class='qs' name='qs' value = 'create'></input>
 		<button class="plus" id="plus"><h2>+</h2></button>
 		</div>
@@ -95,8 +118,8 @@ def question():
 #x = document.forms["myform"][""].value;
 #x = document.forms["myform"][""].value;
 #x = document.forms["myform"][""].value;
-#createDB()
+createDB()
 htmlTop()
-nav_bar()
+get_cookie()
 question()
 htmlTail()
