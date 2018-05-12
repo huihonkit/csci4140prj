@@ -57,7 +57,7 @@ def test(uid):
 	num = obj["num"]
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
-	c.execute("INSERT INTO question(uid, num_question, use_mark, time, title, des, category, question) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (uid, num, mark, time, title, des, category, myjson))
+	c.execute("INSERT INTO question(uid, num_question, use_mark, time, title, des, category, question, num_done) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (uid, num, mark, time, title, des, category, myjson, 0))
 	conn.commit()
 	conn.close()
 	print("<meta http-equiv='refresh' content='0; url=/cgi-bin/index.py'>")
