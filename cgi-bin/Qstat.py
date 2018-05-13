@@ -117,7 +117,7 @@ def body():
 				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
 
 		elif q[i]["type"]=="shortq":
-			print("Answers:<br>")
+			print("<span style=\"font-size:18px\">All answers:</span><br>")
 			c.execute('select answer from answer where qid="%d"' % qid)
 			ans = c.fetchall()
 			for row in ans:
@@ -125,7 +125,7 @@ def body():
 				print("<span style=\"font-size:18px\">\" %s \"</span><br>" % (tempans[i]["answer"]))
 
 		elif q[i]["type"]=="longq":
-			print("Answers:<br>")
+			print("<span style=\"font-size:18px\">All answers:</span><br>")
 			c.execute('select answer from answer where qid="%d"' % qid)
 			ans = c.fetchall()
 			for row in ans:
