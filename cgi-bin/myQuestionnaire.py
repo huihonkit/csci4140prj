@@ -101,7 +101,7 @@ def body():
 	c.execute('select * from question where uid=%d' % (myuserid)) 
 	Qs = c.fetchall()
 	for row in Qs:
-		print('<div><a href="http://localhost:8080/cgi-bin/Qstat.py?targetQ=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><i>&nbsp;&nbsp;%s</i>&nbsp;&nbsp;&nbsp;&nbsp;%d people done, used %d marks<br><span style="font-size:24px">&nbsp;&nbsp;%s</span></div></a><div class="stat"><form action="/cgi-bin/myQuestionnaire.py" method="get" id="changemk"><label for="user_lic">Add marks to the above questionnaire: </label><input id="user_lic" type="number" name="addmk" min="0" max="%d" step="1" value ="0"/></form><button type="submit" form="changemk" value="Submit">Submit</button></div></div><br>' % (row[0], row[7], row[9], row[3], row[5], maxmk))
+		print('<div><a href="http://localhost:8080/cgi-bin/Qstat.py?targetQ=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><i>&nbsp;&nbsp;%s</i>&nbsp;&nbsp;&nbsp;&nbsp;%d people done, used %d marks<br><span style="font-size:24px">&nbsp;&nbsp;%s</span></div></a><div class="stat"><form action="/cgi-bin/myQuestionnaire.py" method="post" id="changemk"><label for="user_lic">Add marks to the above questionnaire: </label><input name="addmktarget" value="%d" hidden><input id="user_lic" type="number" name="addmk" min="0" max="%d" step="1" value ="0"/></form><button type="submit" form="changemk" value="Submit">Submit</button></div></div><br>' % (row[0], row[7], row[9], row[3], row[5], row[0], maxmk))
 
 
 
