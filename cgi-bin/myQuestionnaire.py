@@ -95,10 +95,13 @@ def body():
 		''') % (myusername)
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
+	c.execute('select mark from user where uid=%d' % (myuserid)) 
+	temp = c.fetchone()
+	maxmk = temp[0]
 	c.execute('select * from question where uid=%d' % (myuserid)) 
 	Qs = c.fetchall()
 	for row in Qs:
-		print('<a href="http://localhost:8080/cgi-bin/Qstat.py?targetQ=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><i>&nbsp;&nbsp;%s</i>&nbsp;&nbsp;&nbsp;%d people done<br><span style="font-size:24px">&nbsp;&nbsp;%s</span></div><br>' % (row[0], row[7], row[9], row[5]))
+		print('<div><a href="http://localhost:8080/cgi-bin/Qstat.py?targetQ=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><i>&nbsp;&nbsp;%s</i>&nbsp;&nbsp;&nbsp;&nbsp;%d people done, used %d marks<br><span style="font-size:24px">&nbsp;&nbsp;%s</span></div></a><div class="stat"><form action="/cgi-bin/myQuestionnaire.py" method="get" id="changemk"><label for="user_lic">Add marks to the above questionnaire: </label><input id="user_lic" type="number" name="addmk" min="0" max="%d" step="1" value ="0"/></form><button type="submit" form="changemk" value="Submit">Submit</button></div></div><br>' % (row[0], row[7], row[9], row[3], row[5], maxmk))
 
 
 
