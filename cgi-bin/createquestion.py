@@ -9,6 +9,7 @@ import urlparse
 import subprocess
 import Cookie
 import math
+import ast
 cgitb.enable()
 
 def htmlTop():
@@ -57,6 +58,7 @@ def nav_bar(uname, mark):
 			<a href="myQuestionnaire.py">My Questionnaire</a>
 			<a href="search.py">Search</a>
 			<a href="createquestion.py">Create Questionnaire</a>
+			<a href="myDraft.py">My Draft</a>
 		</div>
 		<div class="right">''')
 	print("<a>"+uname+"</a>")
@@ -93,12 +95,51 @@ def question():
 		<input class="input3" type = 'number' name = 'mark' value=0 min="0"></input>
 		<br>
 		<h4 id="total">Total Mark: <button disabled title="Total mark = 3*number of question + extra mark">?</button></h4>
-		<input type = 'submit' class='qs' name='qs' value = 'create'></input>
+		<input type='submit' class='qs' name='qs' value = 'Create'></input>
+		<input type='submit' class='qs' name='draft' value='Draft'></input>
 		<button class="plus" id="plus"><h2>Add more question</h2></button>
 		</div>
 		''')
 
+def draft():
+	data = cgi.FieldStorage()
+	if data.has_key("did"):
+		did = data["did"].value
+		conn = sqlite3.connect('test.db')
+		c = conn.cursor()
+		c.execute("SELECT * FROM draft WHERE did = ?", (did,))
+		result = c.fetchone()
+		title = "<script>document.getElementsByName('title')[0].value = '" + str(result[5]) + "';</script>"
+		print(title)
+		des = "<script>document.getElementsByName('des')[0].value = '" + str(result[6]) + "';</script>"
+		print(des)
+		print('<script src="/js/draft.js"></script>')
+		num_question = result[2] - 1;
+		while num_question > 0:
+			print("<script>addquestion()</script>")
+			num_question = num_question - 1
+		print("<script>prepare('"+str(result[2])+"','"+result[8]+"')</script>")
+		print("<script>settime('"+result[4]+"')</script>")
+		print("<script>var c = document.getElementsByName('category')[0];</script>")
+		if(result[7] == "art"):
+			print("<script>c.selectedIndex = 0;</script>")
+		elif(result[7] == "business"):
+			print("<script>c.selectedIndex = 1;</script>")
+		elif(result[7] == "education"):
+			print("<script>c.selectedIndex = 2;</script>")
+		elif(result[7] == "engineering"):
+			print("<script>c.selectedIndex = 3;</script>")
+		elif(result[7] == "science"):
+			print("<script>c.selectedIndex = 4;</script>")
+		else:
+			print("<script>c.selectedIndex = 5;</script>")
+		print("<script>document.getElementsByName('mark')[0].value = " + str(result[3]) + ";</script>")
+		c.execute("DELETE FROM draft WHERE did = ?", (did,))
+		conn.commit()
+		conn.close()
+
 htmlTop()
 get_cookie()
 question()
+draft()
 htmlTail()

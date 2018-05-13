@@ -18,15 +18,16 @@ def htmlTop():
 	print("<head>")
 	print("<meta charset='utf-8'/>")
 	print("<title>prj</title>")
-	print('<link type="text/css" rel="stylesheet" href="/css/style.css" />')
+	print('<link type="text/css" rel="stylesheet" href="/css/style1.css" />')
+	print('<link type="text/css" rel="stylesheet" href="/css/styleformyQ.css" />')
+	print('<script src="/js/jquery-3.3.1.min.js"></script>')
+	print('<script src="/js/draft.js"></script>')
 	print("</head>")
 	print("<body>")
 
 def htmlTail():
 	print("</body>")
 	print("</html>")
-
-
 
 def get_cookie():
 	if 'HTTP_COOKIE' in os.environ:
@@ -42,31 +43,15 @@ def get_cookie():
 			if result is not None:
 				c.execute("SELECT uname, mark FROM user WHERE uid = ?", (result[0],))
 				username = c.fetchone()
-				nav_bar2(username[0], username[1])
+				nav_bar(username[0],username[1])
+				draft(result[0])
 			else:
-				nav_bar1()
+				print("<meta http-equiv='refresh' content='0; url=/cgi-bin/index.py'>")
 			conn.close()
 		except:
-			nav_bar1()
+			print("<meta http-equiv='refresh' content='0; url=/cgi-bin/index.py'>")
 
-
-
-def nav_bar1():
-	print('<div class="navbar">')
-	print('''
-		<div class="left">
-			<a href="index.py">Home</a>
-			<a href="search.py">Search</a>
-		</div>
-		<div class="right">
-			<a href="login.py">Sign in</a>
-			<a href="signup.py">Sign up</a>
-		</div>
-		''')
-	print('</div>')
-
-
-def nav_bar2(uname, mark):
+def nav_bar(uname, mark):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
@@ -85,22 +70,15 @@ def nav_bar2(uname, mark):
 		''')
 	print('</div>')
 
-def questionnaire():
-	print('''
-		<div class="category">
-			<button>Art</button>
-			<button>Business</button>
-			<button>Education</button>
-			<button>Engineering</button>
-			<button>Science</button>
-			<button>Social</button>			
-		</div>
-		<div class="content">
-			questionnaire
-		</div>
-		''')
-	
+def draft(uid):
+	print("<div class='content'>")
+	conn = sqlite3.connect('test.db')
+	c = conn.cursor()
+	for record in c.execute("SELECT * FROM draft WHERE uid = ?", (uid,)):
+		print('<a href="createquestion.py?did=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><br><span style="font-size:24px">Title: %s</span></div><br>' % (record[0], record[5]))
+	conn.close()
+	print("</div>")
+
 htmlTop()
 get_cookie()
-questionnaire()
 htmlTail()

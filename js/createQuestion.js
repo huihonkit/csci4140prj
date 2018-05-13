@@ -106,6 +106,73 @@ function check(){
     }
 }
 
+function draft(){
+    var flag = 1;
+    var title = document.getElementsByName("title")[0].value;
+    var des = document.getElementsByName("des")[0].value;
+    var questions = document.getElementsByClassName("qdiv");
+    var array = [];
+    var time = document.getElementsByName("time")[0].value;
+    var c = document.getElementsByName("category")[0];
+    var category = c.options[c.selectedIndex].value;
+    var mark = document.getElementsByName("mark")[0].value;
+    var questionnaire = {};
+
+    var i;
+    for(i=0;i<count;i++){
+        var dict = {};
+        var qt = questions[i].getElementsByTagName("div")[0].getElementsByTagName("input")[0].value;
+        dict["question"] = qt;
+        var type = questions[i].getElementsByTagName("div")[0].getElementsByTagName("select")[0];
+        var type1 = type.options[type.selectedIndex].value;
+        dict["type"] = type1;
+        if(type1 == "mc" || type1 == "checkbox" || type1 == "dropdown"){
+            var j;
+            var len = questions[i].getElementsByTagName("div").length;
+            var answers = [];
+            for(j=1;j<len;j++){
+                var ans = questions[i].getElementsByTagName("div")[j].getElementsByTagName("input")[0].value;
+                answers.push(ans);
+            }
+            dict["answer"] = answers;
+            array.push(dict);
+        }
+        else if(type1 == "ratingscale"){
+            var table = questions[i].getElementsByTagName("div")[1].getElementsByTagName("input");
+            var label = [];
+            label.push(table[0].value);
+            label.push(table[1].value);
+            dict["label"] = label;
+            var scale = [];
+            scale.push(table[2].value);
+            scale.push(table[3].value);
+            dict["scale"] = scale;
+            array.push(dict);
+        }
+        else{
+            array.push(dict);
+        }
+    }
+            //send
+    var right = document.getElementsByClassName("right")[0];
+    var umark = right.getElementsByTagName("a")[1].innerText.split(":")[1];
+    questionnaire["title"] = title;
+    questionnaire["description"] = des;
+    questionnaire["question"] = array;
+    questionnaire["time"] = time;
+    questionnaire["category"] = category;
+    questionnaire["mark"] = mark;
+    questionnaire["num"] = count;
+    questionnaire["total"] = total;
+    var $form = $("<form action='/cgi-bin/createDraft.py' method='post'></form>");
+    var $t = $("<input type='text' name='data'>");
+    $t.val(JSON.stringify(questionnaire));
+    $form.append($t);
+    $(document.body).append($form);
+    $form.submit();
+}
+
+
 function dela(obj){
     var div = $(obj).parent();
     var next1 = div.next()[0];
@@ -243,4 +310,6 @@ document.addEventListener("DOMContentLoaded", function(event){
     y.addEventListener('click', check);
     var extra = document.getElementsByName("mark")[0];
     extra.addEventListener('change', markchange);
+    var z = document.getElementsByClassName('qs')[1];
+    z.addEventListener('click', draft);
 });
