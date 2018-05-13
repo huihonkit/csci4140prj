@@ -110,9 +110,6 @@ def printQ():
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
 	c.execute('CREATE TABLE IF NOT EXISTS answer(qid int, uid int, answer json, time text);')
-
-	qid=2 #*******************************need to delete**********************************
-	
 	c.execute('select * from question where qid="%d"'%qid) 
 	question=c.fetchone() #get questionaire from database
 	
@@ -168,9 +165,11 @@ def printQ():
 	print("</div>")
 	conn.close()
 
-if __name__ == "__main__":
-	qid=-1
-	cuid=-1	
+if __name__ == "__main__":	
+	cuid=-1		
+	#form=cgi.FieldStorage()
+	#qid = form.getvalue('qid')
+	qid=3 #*******************************need to delete after index page finished**********************************
 	get_cookie()
 	
 	printQ()
