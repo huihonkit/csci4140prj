@@ -94,30 +94,16 @@ def htmlTop():
 	print("<head>")
 	print("<meta charset='utf-8'/>")
 	print("<title>prj</title>")
+	print('<script src="/js/bootstrap.min.js"></script>')
+	print('<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" />')
 	print('<link type="text/css" rel="stylesheet" href="/css/style1.css" />')
 	print('<script src="/js/jquery-3.3.1.min.js"></script>')	
 	print("</head>")
-	print("<body>")
+	print("<body style='background-color:#50D19A'>")
 
 def htmlTail():
 	print("</body>")
 	print("</html>")
-
-def nav_bar():
-	print('<div class="navbar">')
-	print('''
-		<div class="left">
-			<a href="index.py">Home</a>
-			<a href="myQuestionnaire.py">My Questionnaire</a>
-			<a href="search.py">Search</a>
-			<a href="createquestion.py">Create Questionnaire</a>
-		</div>
-		<div class="right">
-			<a href="signin.py">Sign in</a>
-			<a href="signup.py">Sign up</a>
-		</div>
-		''')
-	print('</div>')
 
 def printQ():
 	global qid,cuid	
@@ -134,32 +120,32 @@ def printQ():
 
 	#qid integer,uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json
 	uid, num_question, title, des, q = question[1], question[2], question[5], question[6], json.loads(question[8])
-	
-	print("<h1>%s</h1>"%title)
-	print(des)
-	print("<br><br>")
+	print("<div  class='container panel'>")
+	print("<h1><center>%s</center></h1><br>"%title)
+	print("<pre class='well' style='font-size:20px'>%s</pre>"%des)
+	print("<br>")
 	print("<form name='input' action='answer.py' method='post'>")
 	print("<input name='qid' value='%d' hidden>"%qid)
 	print("<input name='qNum' value='%d' hidden>"%num_question)
 	print("<input name='uid' value='%d' hidden>"%cuid)
-	for i in range(num_question):
-		print ("%d. "%(i+1))
-		print(q[i]["question"])
-		print("<br>")
+	#start printing questions
+	for i in range(num_question):		
+		print("<h4><strong>%d. %s</strong></h4>"%(i+1,q[i]["question"]))
+		print("<br><br>")
 		if q[i]["type"]=="mc": #print multiple question			
 			for option in q[i]["answer"]:
-				print("<input type='radio' name='%d' value='%s' required>%s  </input>"%(i,option,option))
+				print("<label class='radio-inline'><input type='radio' name='%d' value='%s' required>%s  </label>"%(i,option,option))
 		elif q[i]["type"]=="shortq":
-			print ("<input type='text' name='%d' required/>" %i)
+			print ("<input class='form-control' type='text' name='%d' required/>" %i)
 		elif q[i]["type"]=="longq":
-			print ("<textarea rows='4' cols='100' name='%d' required> </textarea>" %i)
+			print ("<textarea class='form-control' rows='6' cols='100' name='%d' required> </textarea>" %i)
 		elif q[i]["type"]=="checkbox":
 			for option in q[i]["answer"]:
-				print ("<input type='checkbox' name='%d' value='%s' >%s  </input>" %(i,option,option))
+				print ("<label class='checkbox-inline'><input type='checkbox' name='%d' value='%s' >%s  </label>" %(i,option,option))
 		elif q[i]["type"]=="dropdown":
-			print ("<select name='%d'>"%i)
+			print ("<select class='input2' name='%d'>"%i)
 			for option in q[i]["answer"]:				
-				print ("<option  value='%s'>%s</option>" %(option,option))
+				print ("<option value='%s'>%s</option>" %(option,option))
 			print ("</select>")
 		elif q[i]["type"]=="ratingscale":
 			mid=0;
@@ -167,7 +153,7 @@ def printQ():
 				mid=(int(q[i]["scale"][0])+int(q[i]["scale"][1]))/2
 			else:
 				mid=(int(q[i]["scale"][0])+int(q[i]["scale"][1]))/2+1
-			print ('%s<input name="%d" type="range" min="%d" max="%d" value="%d" id="%d">%s' %(q[i]["label"][0],i,int(q[i]["scale"][0]),int(q[i]["scale"][1]),mid,i,q[i]["label"][1]))
+			print ('<div style="width:400px"><span>%s</span><span style="float:right">%s</span><input style="width:400px" name="%d" type="range" min="%d" max="%d" value="%d" id="%d"></input></div>' %(q[i]["label"][0],q[i]["label"][1],i,int(q[i]["scale"][0]),int(q[i]["scale"][1]),mid,i))
 			print ("<p>Value: <span id='%dvalue'></span></p>"%(i))
 			print('''<script>var slider%d = document.getElementById("%d");
 					var output%d = document.getElementById("%dvalue");
@@ -175,9 +161,11 @@ def printQ():
 					slider%d.oninput = function() {
 					    output%d.innerHTML = this.value;
 					}</script>'''%(i,i,i,i,i,i,i,i))
-		print ("<br><br>")
-	print("<input type='submit' value='Submit'>")
+		print ("<br><br><br>")
+	print("<center><input class='btn btn-success' type='submit' value='Submit'></center>")
+	print("<br><br>")
 	print("</form>")
+	print("</div>")
 	conn.close()
 
 if __name__ == "__main__":
