@@ -169,7 +169,7 @@ if __name__ == "__main__":
 	cuid=-1		
 	#form=cgi.FieldStorage()
 	#qid = form.getvalue('qid')
-	qid=3 #*******************************need to delete after index page finished**********************************
+	qid=4 #*******************************need to delete after index page finished**********************************
 	get_cookie()
 	
 	printQ()

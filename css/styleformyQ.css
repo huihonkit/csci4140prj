@@ -10,3 +10,7 @@
 .Qblock:hover {
 	border-style: solid;
 }
+.stat{
+	width: 50%;
+	margin: 0 auto;
+}

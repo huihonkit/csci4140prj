@@ -95,22 +95,10 @@ def body():
 		''') % (myusername)
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
-	c.execute('''CREATE TABLE IF NOT EXISTS question
-		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json)''')
-	
-	# c.execute('insert into question(qid, uid, title, category) values (1, 1, "first", "CS")')
-	# conn.commit()
-	# c.execute('insert into question(qid, uid, title, category) values (2, 1, "first1", "CS")')
-	# conn.commit()
-	# c.execute('insert into question(qid, uid, title, category) values (3, 1, "first2", "CS")')
-	# conn.commit()
-
-
-
 	c.execute('select * from question where uid=%d' % (myuserid)) 
 	Qs = c.fetchall()
 	for row in Qs:
-		print('<a href="http://localhost:8080/cgi-bin/Qstat.py?targetQ=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><i>&nbsp;&nbsp;%s&nbsp;&nbsp;&nbsp;%d people done</i><br><span style="font-size:24px">&nbsp;&nbsp;%s</span></div><br>' % (row[0], row[7], row[9], row[5]))
+		print('<a href="http://localhost:8080/cgi-bin/Qstat.py?targetQ=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><i>&nbsp;&nbsp;%s</i>&nbsp;&nbsp;&nbsp;%d people done<br><span style="font-size:24px">&nbsp;&nbsp;%s</span></div><br>' % (row[0], row[7], row[9], row[5]))
 
 
 

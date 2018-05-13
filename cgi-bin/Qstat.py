@@ -9,6 +9,9 @@ import urlparse
 import subprocess
 import Cookie
 import math
+import datetime
+import json
+import sys
 cgitb.enable()
 
 def htmlTop():
@@ -86,13 +89,110 @@ def nav_bar2(uname):
 def body():
 	form = cgi.FieldStorage()
 	qid = int(form.getvalue('targetQ'))
-	print('''
-		<br><br>
-		<center><h3>Stat page, qid=%d</h3></center>
-		
-		<br>
-		''') % (qid)
+	conn = sqlite3.connect('test.db')
+	c = conn.cursor()
+	c.execute('select * from question where qid="%d"' % qid) 
+	question = c.fetchone()
+	uid, num_question, title, des, numdone, q = question[1], question[2], question[5], question[6], question[9], json.loads(question[8])
+	print("<br><br><h1><center>Statistics for \"%s\"</center></h1><br>" % title)
+	print("<span style=\"font-size:24px\"><center>%d people finished this questionnaire</center></span><br>" % numdone)
+	#print("<pre class='well' style='font-size:20px'>%s</pre><br>" % des)
 
+	print("<div class='stat'>")
+
+	for i in range(num_question):		
+		print("<span style=\"font-size:24px\">%d. %s (%s)</span><br>" % (i+1, q[i]["question"], q[i]["type"]))
+
+		if q[i]["type"]=="mc": #print multiple question			
+			for option in q[i]["answer"]:			
+				c.execute('select answer from answer where qid="%d"' % qid)
+				ans = c.fetchall()
+				howmanyofthisoption = 0
+				for row in ans:
+					tempans = json.loads(row[0])
+					#print("%s" % tempans[i]["answer"])
+					if tempans[i]["answer"] == option:
+						howmanyofthisoption = howmanyofthisoption + 1
+				percentage = (float(howmanyofthisoption) / float(numdone)) * 100.0
+				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
+
+		elif q[i]["type"]=="shortq":
+			print("Answers:<br>")
+			c.execute('select answer from answer where qid="%d"' % qid)
+			ans = c.fetchall()
+			for row in ans:
+				tempans = json.loads(row[0])
+				print("<span style=\"font-size:18px\">\" %s \"</span><br>" % (tempans[i]["answer"]))
+
+		elif q[i]["type"]=="longq":
+			print("Answers:<br>")
+			c.execute('select answer from answer where qid="%d"' % qid)
+			ans = c.fetchall()
+			for row in ans:
+				tempans = json.loads(row[0])
+				print("<span style=\"font-size:18px\">\"%s \"</span><br>" % (tempans[i]["answer"]))
+
+		elif q[i]["type"]=="checkbox":
+			total = 0			
+			for option in q[i]["answer"]:			
+				c.execute('select answer from answer where qid="%d"' % qid)
+				ans = c.fetchall()
+				for row in ans:
+					tempans = json.loads(row[0])
+					#print("%s" % tempans[i]["answer"])
+					if tempans[i]["answer"] == option:
+						total = total + 1
+					for cboption in tempans[i]["answer"]:
+						if cboption == option:
+							total = total + 1
+
+			for option in q[i]["answer"]:			
+				c.execute('select answer from answer where qid="%d"' % qid)
+				ans = c.fetchall()
+				howmanyofthisoption = 0
+				for row in ans:
+					tempans = json.loads(row[0])
+					#print("%s" % tempans[i]["answer"])
+					if tempans[i]["answer"] == option:
+						howmanyofthisoption = howmanyofthisoption + 1
+					for cboption in tempans[i]["answer"]:
+						if cboption == option:
+							howmanyofthisoption = howmanyofthisoption + 1
+				percentage = (float(howmanyofthisoption) / float(total)) * 100.0
+				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
+		
+		elif q[i]["type"]=="dropdown":
+			for option in q[i]["answer"]:			
+				c.execute('select answer from answer where qid="%d"' % qid)
+				ans = c.fetchall()
+				howmanyofthisoption = 0
+				for row in ans:
+					tempans = json.loads(row[0])
+					#print("%s" % tempans[i]["answer"])
+					if tempans[i]["answer"] == option:
+						howmanyofthisoption = howmanyofthisoption + 1
+				percentage = (float(howmanyofthisoption) / float(numdone)) * 100.0
+				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
+
+		elif q[i]["type"]=="ratingscale":
+			minr = int(q[i]["scale"][0])
+			maxr = int(q[i]["scale"][1])
+			numofr = maxr - minr + 1
+			#print("%d %d %d<br>" %(minr, maxr, numofr))
+			for j in xrange(0, numofr):
+				c.execute('select answer from answer where qid="%d"' % qid)
+				ans = c.fetchall()
+				howmanyofthisrating = 0
+				for row in ans:
+					tempans = json.loads(row[0])
+					#print("%s" % tempans[i]["answer"])
+					if int(tempans[i]["answer"]) == (minr + j):
+						howmanyofthisrating = howmanyofthisrating + 1
+				percentage = (float(howmanyofthisrating) / float(numdone)) * 100.0
+				print("<span style=\"font-size:18px\">%d people rated %s (%.1f%%)</span><br>" % (howmanyofthisoption, (minr + j), percentage))
+
+		print("<br><br>")
+	print("</div>")
 
 htmlTop()
 get_cookie()
