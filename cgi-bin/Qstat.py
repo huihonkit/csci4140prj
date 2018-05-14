@@ -12,6 +12,7 @@ import math
 import datetime
 import json
 import sys
+import answerTable
 # import matplotlib.pyplot as plt
 # from matplotlib.gridspec import GridSpec
 #from pylab import figure, axes, pie, title, show
@@ -27,6 +28,10 @@ def htmlTop():
 	print("<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>")
 	print('<link type="text/css" rel="stylesheet" href="/css/style.css" />')
 	print('<link type="text/css" rel="stylesheet" href="/css/styleformyQ.css" />')
+	print('<script src="/js/bootstrap.min.js"></script>')
+	print('<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" />')
+	print('<link type="text/css" rel="stylesheet" href="/css/style1.css" />')
+	print('<script src="/js/jquery-3.3.1.min.js"></script>')	
 	print("</head>")
 	print("<body>")
 
@@ -100,7 +105,7 @@ def body():
 	print("<br><br><h1><center>Statistics for \"%s\"</center></h1><br>" % title)
 	print("<span style=\"font-size:24px\"><center>%d people finished this questionnaire</center></span><br>" % numdone)
 	#print("<pre class='well' style='font-size:20px'>%s</pre><br>" % des)
-
+	answerTable.createTable()
 	print("<div class='stat'>")
 
 	for i in range(num_question):		
