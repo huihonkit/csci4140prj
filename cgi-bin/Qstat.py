@@ -31,7 +31,6 @@ def htmlTail():
 	print("</html>")
 
 def get_cookie():
-	global myusername, myuserid
 	if 'HTTP_COOKIE' in os.environ:
 		cookie_string = os.environ.get('HTTP_COOKIE')
 		c = Cookie.SimpleCookie()
@@ -43,11 +42,9 @@ def get_cookie():
 			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
 			result = c.fetchone()
 			if result is not None:
-				c.execute("SELECT uname FROM user WHERE uid = ?", (result[0],))
-				myuserid = result[0]
+				c.execute("SELECT uname, mark FROM user WHERE uid = ?", (result[0],))
 				username = c.fetchone()
-				nav_bar2(username[0])
-				myusername = username[0]
+				nav_bar2(username[0], username[1])
 			else:
 				nav_bar1()
 			conn.close()
@@ -69,7 +66,7 @@ def nav_bar1():
 	print('</div>')
 
 
-def nav_bar2(uname):
+def nav_bar2(uname, mark):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
@@ -77,9 +74,11 @@ def nav_bar2(uname):
 			<a href="myQuestionnaire.py">My Questionnaire</a>
 			<a href="search.py">Search</a>
 			<a href="createquestion.py">Create Questionnaire</a>
+			<a href="myDraft.py">My Draft</a>
 		</div>
 		<div class="right">''')
 	print("<a>"+uname+"</a>")
+	print("<a>Mark:"+str(mark)+"</a>")
 	print('''
 			<a href="logout.py">Logout</a>
 		</div>
@@ -113,7 +112,11 @@ def body():
 					#print("%s" % tempans[i]["answer"])
 					if tempans[i]["answer"] == option:
 						howmanyofthisoption = howmanyofthisoption + 1
-				percentage = (float(howmanyofthisoption) / float(numdone)) * 100.0
+				if numdone == 0 or howmanyofthisoption == 0:
+					tempstat = 0
+				else: 
+					tempstat = (float(howmanyofthisoption) / float(numdone))
+				percentage = float(tempstat) * 100.0
 				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
 
 		elif q[i]["type"]=="shortq":
@@ -158,7 +161,12 @@ def body():
 					for cboption in tempans[i]["answer"]:
 						if cboption == option:
 							howmanyofthisoption = howmanyofthisoption + 1
-				percentage = (float(howmanyofthisoption) / float(total)) * 100.0
+				if numdone == 0 or howmanyofthisoption == 0 or total == 0:
+					tempstat = 0
+				else: 
+					tempstat = (float(howmanyofthisoption) / float(total))
+				percentage = float(tempstat) * 100.0
+				#percentage = (float(howmanyofthisoption) / float(total)) * 100.0
 				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
 		
 		elif q[i]["type"]=="dropdown":
@@ -171,7 +179,11 @@ def body():
 					#print("%s" % tempans[i]["answer"])
 					if tempans[i]["answer"] == option:
 						howmanyofthisoption = howmanyofthisoption + 1
-				percentage = (float(howmanyofthisoption) / float(numdone)) * 100.0
+				if numdone == 0 or howmanyofthisoption == 0:
+					tempstat = 0
+				else: 
+					tempstat = (float(howmanyofthisoption) / float(numdone))
+				percentage = float(tempstat) * 100.0
 				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
 
 		elif q[i]["type"]=="ratingscale":
@@ -188,7 +200,12 @@ def body():
 					#print("%s" % tempans[i]["answer"])
 					if int(tempans[i]["answer"]) == (minr + j):
 						howmanyofthisrating = howmanyofthisrating + 1
-				percentage = (float(howmanyofthisrating) / float(numdone)) * 100.0
+				if numdone == 0 or howmanyofthisrating == 0:
+					tempstat = 0
+				else: 
+					tempstat = (float(howmanyofthisrating) / float(numdone))
+				percentage = float(tempstat) * 100.0
+				#percentage = (float(howmanyofthisrating) / float(numdone)) * 100.0
 				print("<span style=\"font-size:18px\">%d people rated %s (%.1f%%)</span><br>" % (howmanyofthisoption, (minr + j), percentage))
 
 		print("<br><br>")
