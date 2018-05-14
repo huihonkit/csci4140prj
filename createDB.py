@@ -8,7 +8,7 @@ c.execute('''CREATE TABLE IF NOT EXISTS user
 c.execute('''CREATE TABLE IF NOT EXISTS session
 		(sid integer PRIMARY KEY, uid integer)''')
 c.execute('''CREATE TABLE IF NOT EXISTS question
-		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json, num_done integer)''')
+		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json, num_done integer, est integer)''')
 c.execute('''CREATE TABLE IF NOT EXISTS answer
 		(qid integer, uid integer, answer json, time text)''')
 c.execute('''CREATE TABLE IF NOT EXISTS draft

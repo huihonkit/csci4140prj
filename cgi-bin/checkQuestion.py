@@ -56,9 +56,11 @@ def test(uid):
 	mark = obj["mark"]
 	num = obj["num"]
 	total = obj["total"]
+	est = obj["est"]
+	print("<script>console.log('"+str(est)+"')</script>")
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
-	c.execute("INSERT INTO question(uid, num_question, use_mark, time, title, des, category, question, num_done) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (uid, num, mark, time, title, des, category, myjson, 0))
+	c.execute("INSERT INTO question(uid, num_question, use_mark, time, title, des, category, question, num_done, est) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (uid, num, mark, time, title, des, category, myjson, 0, est))
 	conn.commit()
 	c.execute("SELECT mark FROM user WHERE uid = ?", (uid,))
 	result = c.fetchone()
