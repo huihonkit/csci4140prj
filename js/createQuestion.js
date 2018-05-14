@@ -1,5 +1,6 @@
 count = 0;
 total = 0;
+est = 0;
 
 function check(){
     var flag = 1;
@@ -28,6 +29,7 @@ function check(){
                 alert("All Questions must be filled out");
                 break;
             }
+            est = est + 3;
             dict["question"] = qt;
             var type = questions[i].getElementsByTagName("div")[0].getElementsByTagName("select")[0];
             var type1 = type.options[type.selectedIndex].value;
@@ -44,6 +46,7 @@ function check(){
                         break;
                     }
                     answers.push(ans);
+                    est = est + 1.5;
                 }
                 if(flag == 1){
                     dict["answer"] = answers;
@@ -66,9 +69,15 @@ function check(){
                 scale.push(table[3].value);
                 dict["scale"] = scale;
                 array.push(dict);
+                est = est + Math.abs(table[2].value - table[3].value) * 1.5;
+            }
+            else if(type1 == "shortq"){
+                array.push(dict);
+                est = est + 15;
             }
             else{
                 array.push(dict);
+                est = est + 300;
             }
             if(flag == 0){
                 break;
@@ -91,6 +100,8 @@ function check(){
                     questionnaire["mark"] = mark;
                     questionnaire["num"] = count;
                     questionnaire["total"] = total;
+                    questionnaire["est"] = est;
+                    //console.log(questionnaire["est"]);
                     var $form = $("<form action='/cgi-bin/checkQuestion.py' method='post'></form>");
                     var $t = $("<input type='text' name='data'>");
                     $t.val(JSON.stringify(questionnaire));

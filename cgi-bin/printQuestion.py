@@ -168,9 +168,9 @@ def printQ():
 
 if __name__ == "__main__":	
 	cuid=-1		
-	#form=cgi.FieldStorage()
-	#qid = form.getvalue('qid')
-	qid=4 #*******************************need to delete after index page finished**********************************
+	form=cgi.FieldStorage()
+	qid = int(form.getvalue('qid'))
+	#qid=4 #*******************************need to delete after index page finished**********************************
 	get_cookie()
 	
 	printQ()
