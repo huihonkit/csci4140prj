@@ -6,6 +6,9 @@ import sqlite3
 import Cookie
 import os
 cgitb.enable()
+
+
+
 def get_cookie():
 	if 'HTTP_COOKIE' in os.environ:
 		cookie_string = os.environ.get('HTTP_COOKIE')
