@@ -12,7 +12,10 @@ import math
 import datetime
 import json
 import sys
-from pylab import figure, axes, pie, title, show
+import answerTable
+# import matplotlib.pyplot as plt
+# from matplotlib.gridspec import GridSpec
+#from pylab import figure, axes, pie, title, show
 cgitb.enable()
 
 def htmlTop():
@@ -22,8 +25,13 @@ def htmlTop():
 	print("<head>")
 	print("<meta charset='utf-8'/>")
 	print("<title>prj</title>")
+	print("<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>")
 	print('<link type="text/css" rel="stylesheet" href="/css/style.css" />')
 	print('<link type="text/css" rel="stylesheet" href="/css/styleformyQ.css" />')
+	print('<script src="/js/bootstrap.min.js"></script>')
+	print('<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" />')
+	print('<link type="text/css" rel="stylesheet" href="/css/style1.css" />')
+	print('<script src="/js/jquery-3.3.1.min.js"></script>')	
 	print("</head>")
 	print("<body>")
 
@@ -97,17 +105,18 @@ def body():
 	print("<br><br><h1><center>Statistics for \"%s\"</center></h1><br>" % title)
 	print("<span style=\"font-size:24px\"><center>%d people finished this questionnaire</center></span><br>" % numdone)
 	#print("<pre class='well' style='font-size:20px'>%s</pre><br>" % des)
-
+	answerTable.createTable()
 	print("<div class='stat'>")
 
 	for i in range(num_question):		
 		print("<span style=\"font-size:24px\">%d. %s (%s)</span><br>" % (i+1, q[i]["question"], q[i]["type"]))
 
 		if q[i]["type"]=="mc": #print multiple question	
-			labels = []
-			values = []		
+			outerl = [['Option', 'Number']]
 			for option in q[i]["answer"]:
-				labels.append(option)			
+				innerl = []
+				#print option.encode("ascii")
+				innerl.append(option.encode("ascii"))			
 				c.execute('select answer from answer where qid="%d"' % qid)
 				ans = c.fetchall()
 				howmanyofthisoption = 0
@@ -121,16 +130,28 @@ def body():
 				else: 
 					tempstat = (float(howmanyofthisoption) / float(numdone))
 				percentage = float(tempstat) * 100.0
-				values.append(howmanyofthisoption)
+				innerl.append(howmanyofthisoption)
+				outerl.append(innerl)
 				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
-				labels_tuple = tuple(labels)
-				figure(1, figsize=(6, 6))
-				ax = axes([0.1, 0.1, 0.8, 0.8])
-				explode = (0, 0.05, 0, 0)
-				pie(values, explode=explode, labels=labels_tuple, autopct='%1.1f%%', shadow=True)
-				title('Raining Hogs and Dogs', bbox={'facecolor': '0.8', 'pad': 5})
-				savefig('foo.png', bbox_inches='tight')
-				print("<img src='foo.png'><br>")
+
+			print('''
+				<div id="piechart%d"></div>
+				<script type="text/javascript">
+				google.charts.load('current', {'packages':['corechart']});
+				google.charts.setOnLoadCallback(drawChart);
+
+				function drawChart() {
+					var data = google.visualization.arrayToDataTable(%s);
+
+ 				// Optional; add a title and set the width and height of the chart
+ 				var options = {'width':550, 'height':400};
+
+				// Display the chart inside the <div> element with id="piechart"
+				var chart = new google.visualization.PieChart(document.getElementById('piechart%d'));
+				chart.draw(data, options);
+				}
+				</script>
+				''' % (i, outerl, i))
 
 		elif q[i]["type"]=="shortq":
 			print("<span style=\"font-size:18px\">All answers:</span><br>")
@@ -149,7 +170,8 @@ def body():
 				print("<span style=\"font-size:18px\">\"%s \"</span><br>" % (tempans[i]["answer"]))
 
 		elif q[i]["type"]=="checkbox":
-			total = 0			
+			total = 0
+			outerl = [['Option', 'Number']]
 			for option in q[i]["answer"]:			
 				c.execute('select answer from answer where qid="%d"' % qid)
 				ans = c.fetchall()
@@ -162,7 +184,10 @@ def body():
 						if cboption == option:
 							total = total + 1
 
-			for option in q[i]["answer"]:			
+			for option in q[i]["answer"]:
+				innerl = []
+				#print option.encode("ascii")
+				innerl.append(option.encode("ascii"))		
 				c.execute('select answer from answer where qid="%d"' % qid)
 				ans = c.fetchall()
 				howmanyofthisoption = 0
@@ -179,11 +204,35 @@ def body():
 				else: 
 					tempstat = (float(howmanyofthisoption) / float(total))
 				percentage = float(tempstat) * 100.0
+				innerl.append(howmanyofthisoption)
+				outerl.append(innerl)
 				#percentage = (float(howmanyofthisoption) / float(total)) * 100.0
 				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
-		
+			print('''
+				<div id="piechart%d"></div>
+				<script type="text/javascript">
+				google.charts.load('current', {'packages':['corechart']});
+				google.charts.setOnLoadCallback(drawChart);
+
+				function drawChart() {
+					var data = google.visualization.arrayToDataTable(%s);
+
+ 				// Optional; add a title and set the width and height of the chart
+ 				var options = {'width':550, 'height':400};
+
+				// Display the chart inside the <div> element with id="piechart"
+				var chart = new google.visualization.PieChart(document.getElementById('piechart%d'));
+				chart.draw(data, options);
+				}
+				</script>
+				''' % (i, outerl, i))
+
 		elif q[i]["type"]=="dropdown":
-			for option in q[i]["answer"]:			
+			outerl = [['Option', 'Number']]
+			for option in q[i]["answer"]:
+				innerl = []
+				#print option.encode("ascii")
+				innerl.append(option.encode("ascii"))			
 				c.execute('select answer from answer where qid="%d"' % qid)
 				ans = c.fetchall()
 				howmanyofthisoption = 0
@@ -197,14 +246,37 @@ def body():
 				else: 
 					tempstat = (float(howmanyofthisoption) / float(numdone))
 				percentage = float(tempstat) * 100.0
+				innerl.append(howmanyofthisoption)
+				outerl.append(innerl)
 				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
+			print('''
+				<div id="piechart%d"></div>
+				<script type="text/javascript">
+				google.charts.load('current', {'packages':['corechart']});
+				google.charts.setOnLoadCallback(drawChart);
+
+				function drawChart() {
+					var data = google.visualization.arrayToDataTable(%s);
+
+ 				// Optional; add a title and set the width and height of the chart
+ 				var options = {'width':550, 'height':400};
+
+				// Display the chart inside the <div> element with id="piechart"
+				var chart = new google.visualization.PieChart(document.getElementById('piechart%d'));
+				chart.draw(data, options);
+				}
+				</script>
+				''' % (i, outerl, i))
 
 		elif q[i]["type"]=="ratingscale":
+			outerl = [['Rating', 'Number']]
 			minr = int(q[i]["scale"][0])
 			maxr = int(q[i]["scale"][1])
 			numofr = maxr - minr + 1
 			#print("%d %d %d<br>" %(minr, maxr, numofr))
 			for j in xrange(0, numofr):
+				innerl = []
+				innerl.append(str(j))
 				c.execute('select answer from answer where qid="%d"' % qid)
 				ans = c.fetchall()
 				howmanyofthisrating = 0
@@ -218,8 +290,28 @@ def body():
 				else: 
 					tempstat = (float(howmanyofthisrating) / float(numdone))
 				percentage = float(tempstat) * 100.0
+				innerl.append(howmanyofthisrating)
+				outerl.append(innerl)
 				#percentage = (float(howmanyofthisrating) / float(numdone)) * 100.0
-				print("<span style=\"font-size:18px\">%d people rated %s (%.1f%%)</span><br>" % (howmanyofthisoption, (minr + j), percentage))
+				print("<span style=\"font-size:18px\">%d people rated %s (%.1f%%)</span><br>" % (howmanyofthisrating, (minr + j), percentage))
+			print('''
+				<div id="piechart%d"></div>
+				<script type="text/javascript">
+				google.charts.load('current', {'packages':['corechart']});
+				google.charts.setOnLoadCallback(drawChart);
+
+				function drawChart() {
+					var data = google.visualization.arrayToDataTable(%s);
+
+ 				// Optional; add a title and set the width and height of the chart
+ 				var options = {'width':550, 'height':400};
+
+				// Display the chart inside the <div> element with id="piechart"
+				var chart = new google.visualization.PieChart(document.getElementById('piechart%d'));
+				chart.draw(data, options);
+				}
+				</script>
+				''' % (i, outerl, i))
 
 		print("<br><br>")
 	print("</div>")
