@@ -98,7 +98,7 @@ def htmlTop():
 	print('<link type="text/css" rel="stylesheet" href="/css/style1.css" />')
 	print('<script src="/js/jquery-3.3.1.min.js"></script>')	
 	print("</head>")
-	print("<body style='background-color:#50D19A'>")
+	print("<body style='background-color:#638e63'>")
 
 def htmlTail():
 	print("</body>")
