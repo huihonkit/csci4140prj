@@ -4,7 +4,7 @@ import sqlite3
 conn = sqlite3.connect('test.db')
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS user
-		(uid integer PRIMARY KEY, uname text, password text, mark integer)''')
+		(uid integer PRIMARY KEY, uname text, password text, mark integer, credit integer)''')
 c.execute('''CREATE TABLE IF NOT EXISTS session
 		(sid integer PRIMARY KEY, uid integer)''')
 c.execute('''CREATE TABLE IF NOT EXISTS question
@@ -13,10 +13,12 @@ c.execute('''CREATE TABLE IF NOT EXISTS answer
 		(qid integer, uid integer, answer json, time text)''')
 c.execute('''CREATE TABLE IF NOT EXISTS draft
 		(did integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json)''')
+c.execute('''CREATE TABLE IF NOT EXISTS predict
+		(pid integer PRIMARY KEY, qid integer, uid integer, predict integer)''')
 c.execute("DELETE FROM user")
 conn.commit()
-c.execute("INSERT INTO user(uid, uname, password, mark) VALUES (?, ?, ?, ?)", (1, 'user1', 'test', 0))
+c.execute("INSERT INTO user(uid, uname, password, mark, credit) VALUES (?, ?, ?, ?, ?)", (1, 'user1', 'test', 0, 0))
 conn.commit()
-c.execute("INSERT INTO user(uid, uname, password, mark) VALUES (?, ?, ?, ?)", (2, 'user2', 'pw', 1000))
+c.execute("INSERT INTO user(uid, uname, password, mark, credit) VALUES (?, ?, ?, ?, ?)", (2, 'user2', 'pw', 1000, 0))
 conn.commit()
 conn.close()
