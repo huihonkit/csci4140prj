@@ -109,7 +109,7 @@ def questionnaire():
 def DB():
 		
 	conn = sqlite3.connect('test.db')
-	c = conn.cursor()
+	c1 = conn.cursor()
 
 	if 'HTTP_COOKIE' in os.environ:
 			cookie_string = os.environ.get('HTTP_COOKIE')
@@ -117,14 +117,36 @@ def DB():
 			c.load(cookie_string)
 			try:
 				data = c['csci414064769'].value
-				conn = sqlite3.connect('test.db')
-				c = conn.cursor()
-				c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
-				result = c.fetchone()
+				c1.execute("SELECT uid FROM session WHERE sid = ?", (data,))
+				result = c1.fetchone()
 				if result is not None:
-					rownum = c.execute("SELECT * FROM question WHERE uid != ?", (result[0],))
+					rownum = c1.execute("SELECT * FROM question WHERE uid != ?", (result[0],))
 				else:
-					rownum = c.execute("SELECT * FROM question")
+					rownum = c1.execute("SELECT * FROM question")
+
+				
+				for i in rownum:
+					#print(i)
+					mystr = "onclick='myfun("+str(i[0])+")'"
+					if i[7] == "art":
+						print("<div class='art' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
+					elif i[7] == "business":
+						print("<div class='business' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
+					elif i[7] == "education":
+						print("<div class='education' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
+					elif i[7] == "engineering":
+						print("<div class='engineering' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
+					elif i[7] == "science":
+						print("<div class='science' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
+					else:
+						print("<div class='social' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")	
+					print("<hr>")
+					conn.close()
+
+			except:
+				
+
+				rownum = c1.execute("SELECT * FROM question")
 
 				for i in rownum:
 					#print(i)
@@ -142,8 +164,8 @@ def DB():
 					else:
 						print("<div class='social' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")	
 					print("<hr>")
-			except:
 				conn.close()
+
 
 
 
