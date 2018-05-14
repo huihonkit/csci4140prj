@@ -12,6 +12,7 @@ import math
 import datetime
 import json
 import sys
+from pylab import figure, axes, pie, title, show
 cgitb.enable()
 
 def htmlTop():
@@ -102,8 +103,11 @@ def body():
 	for i in range(num_question):		
 		print("<span style=\"font-size:24px\">%d. %s (%s)</span><br>" % (i+1, q[i]["question"], q[i]["type"]))
 
-		if q[i]["type"]=="mc": #print multiple question			
-			for option in q[i]["answer"]:			
+		if q[i]["type"]=="mc": #print multiple question	
+			labels = []
+			values = []		
+			for option in q[i]["answer"]:
+				labels.append(option)			
 				c.execute('select answer from answer where qid="%d"' % qid)
 				ans = c.fetchall()
 				howmanyofthisoption = 0
@@ -117,7 +121,16 @@ def body():
 				else: 
 					tempstat = (float(howmanyofthisoption) / float(numdone))
 				percentage = float(tempstat) * 100.0
+				values.append(howmanyofthisoption)
 				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
+				labels_tuple = tuple(labels)
+				figure(1, figsize=(6, 6))
+				ax = axes([0.1, 0.1, 0.8, 0.8])
+				explode = (0, 0.05, 0, 0)
+				pie(values, explode=explode, labels=labels_tuple, autopct='%1.1f%%', shadow=True)
+				title('Raining Hogs and Dogs', bbox={'facecolor': '0.8', 'pad': 5})
+				savefig('foo.png', bbox_inches='tight')
+				print("<img src='foo.png'><br>")
 
 		elif q[i]["type"]=="shortq":
 			print("<span style=\"font-size:18px\">All answers:</span><br>")
