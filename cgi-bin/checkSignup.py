@@ -57,7 +57,7 @@ def check():
 					result = c.fetchone()
 					if result is None:
 						break
-				c.execute("INSERT INTO user VALUES (?, ?, ?, ?)", (uid, username, password, 0))
+				c.execute("INSERT INTO user VALUES (?, ?, ?, ?, ?)", (uid, username, password, 0, 0))
 				conn.commit()
 				conn.close()
 
