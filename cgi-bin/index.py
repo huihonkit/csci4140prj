@@ -45,43 +45,25 @@ def get_cookie():
 				c.execute("SELECT uname, mark FROM user WHERE uid = ?", (result[0],))
 				username = c.fetchone()
 				nav_bar2(username[0], username[1])
-				conn.close()
+				
 				DB(result[0])
+				conn.close()
+				#DB(result[0])
 			else:
 				nav_bar1()
-				DB2()
 				conn.close()
+				DB2()
 		except:
 			nav_bar1()
 			DB2()
+			
 
 
 def DB(uid):
+	
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
-	rownum = c.execute("SELECT * FROM question WHERE uid != ? ORDER BY use_mark DESC", (uid,))
-					
-	for i in rownum:
-
-		#print(i)
-		mystr = "onclick='myfun("+str(i[0])+")'"
-		if i[7] == "art":
-			print("<div class='art' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-		elif i[7] == "business":
-			print("<div class='business' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-		elif i[7] == "education":
-			print("<div class='education' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-		elif i[7] == "engineering":
-			print("<div class='engineering' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-		elif i[7] == "science":
-			print("<div class='science' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-		else:
-			print("<div class='social' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")	
-		print("<hr>")
-
-
-
-	'''	
+	
 	c.execute("SELECT qid FROM answer WHERE uid = ?", (uid,))
 	results = c.fetchall()
 	if results is not None:
@@ -89,10 +71,32 @@ def DB(uid):
 		qid = []
 		for result in results:
 			qid.append(result[0])
-		c.execute("SELECT * FROM question WHERE qid = ?", (qid,))
+		#rownum = c.execute("SELECT * FROM question WHERE uid != '%s' and qid not IN (%s) ORDER BY use_mark DESC"%(uid, ",".join('?'*qid),qid))
 
+	
+
+	rownum = c.execute("SELECT * FROM question WHERE uid != ? ORDER BY use_mark DESC", (uid, ))
+		
+	for i in rownum:
+
+	#print(i)
+		if (i[0] not in qid):
+			mystr = "onclick='myfun("+str(i[0])+")'"
+			if i[7] == "art":
+				print("<div class='art' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
+			elif i[7] == "business":
+				print("<div class='business' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
+			elif i[7] == "education":
+				print("<div class='education' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
+			elif i[7] == "engineering":
+				print("<div class='engineering' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
+			elif i[7] == "science":
+				print("<div class='science' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
+			else:
+				print("<div class='social' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")	
+			print("<hr>")
+		
 	conn.close()
-	'''
 
 				
 
