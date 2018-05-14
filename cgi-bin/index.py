@@ -90,6 +90,7 @@ def nav_bar2(uname, mark):
 def questionnaire():
 	print('''
 		<div class="category">
+			<button id="All">All</button>
 			<button id="Art">Art</button>
 			<button id="Business">Business</button>
 			<button id="Education">Education</button>
@@ -98,7 +99,7 @@ def questionnaire():
 			<button id="Social">Social</button>			
 		</div>
 		<div class="content">
-			questionnaire
+			username	title	description		category
 			<br>
 			<br>
 			<hr>
@@ -113,19 +114,20 @@ def DB():
 		#print(i)
 		mystr = "onclick='myfun("+str(i[0])+")'"
 		if i[7] == "art":
-			print("<div class='art' "+mystr+">"+str(i[5])+str(i[6])+"</div>")
+			print("<div class='art' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
 		elif i[7] == "business":
-			print("<div class='business'>"+str(i[5])+str(i[6])+"</div>")
+			print("<div class='business' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
 		elif i[7] == "education":
-			print("<div class='education'>"+str(i[5])+str(i[6])+"</div>")
+			print("<div class='education' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
 		elif i[7] == "engineering":
-			print("<div class='engineering'>"+str(i[5])+str(i[6])+"</div>")
+			print("<div class='engineering' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
 		elif i[7] == "science":
-			print("<div class='science'>"+str(i[5])+str(i[6])+"</div>")
+			print("<div class='science' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
 		else:
-			print("<div class='social'>"+str(i[5])+str(i[6])+"</div>")	
+			print("<div class='social' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")	
 		print("<hr>")
 	conn.close()
+
 
 
 htmlTop()

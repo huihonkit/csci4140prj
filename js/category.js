@@ -12,6 +12,33 @@ function show (elements) {
   }
 }
 
+function all(){
+	var art = document.getElementsByClassName("art");
+	var business = document.getElementsByClassName("business");
+	var education = document.getElementsByClassName("education");
+	var engineering = document.getElementsByClassName("engineering");
+	var science = document.getElementsByClassName("science");
+	var social = document.getElementsByClassName("social");
+
+	if(art.length != 0){
+		show(art);
+	}
+	if(business.length != 0){
+		show(business);
+	}
+	if(education.length != 0){
+		show(education);
+	}
+	if(engineering.length != 0){
+		show(engineering);
+	}
+	if(science.length != 0){
+		show(science);
+	}
+	if(social.length != 0){
+		show(social);
+	}
+}
 
 function art(){
 	var art = document.getElementsByClassName("art");
@@ -188,7 +215,7 @@ function social(){
 
 function myfun(qid){
 	var $form = $("<form action='/cgi-bin/printQuestion.py' method='post'</form>");
-	var $t = $("<input type='text' name='qid'>");
+	var $t = $("<input type='text' name='qid' style='display:none'>");
 	$t.val(qid);
 	$form.append($t);
 	$(document.body).append($form);
@@ -197,6 +224,8 @@ function myfun(qid){
 
 
 document.addEventListener("DOMContentLoaded", function(event){
+	var all1 = document.getElementById("All");
+	all1.addEventListener('click', all);
 	var art1 = document.getElementById("Art");
 	art1.addEventListener('click', art);
 	var business1 = document.getElementById("Business");
