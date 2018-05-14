@@ -31,25 +31,35 @@ def saveAnswer():
 	qid = form.getvalue('qid')
 	uid = form.getvalue('uid')
 	qNum = form.getvalue('qNum')
+	startT = form.getvalue('startT')
+	#currentT=datetime.datetime.now().replace(microsecond=0)
+	currentT=datetime.datetime.now().time().strftime('%H:%M:%S')
+	t = datetime.datetime.strptime(currentT,'%H:%M:%S')-datetime.datetime.strptime(startT,"%H:%M:%S")
+
 	data=[]
 	for i in range(int(qNum)):
 		ans=form.getvalue('%d'%i)
 		data.append({'answer':ans})	#save each question's answer
 
 	data = json.dumps(data)
-
-	currentT=datetime.datetime.now() #get current time
-	t = currentT.strftime("%d-%b-%Y %H:%M:%S")	
-
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
-	c.execute("SELECT num_done from question where qid=%d"%(int(qid)))
-	num_done=c.fetchone()
-	num_done=int(num_done[0])
+
+	c.execute("SELECT * from question where qid='%d'"%(int(qid)))
+	questionnaire=c.fetchone()
+	num_done=int(questionnaire[9])
 	num_done+=1
+	numQ=int(questionnaire[2])
+	marks=numQ
+	c.execute("SELECT mark from user where uid='%d'"%(int(uid)))
+	userMarks=c.fetchone()
+	marks+=int(userMarks[0])	
+	
+	c.execute("UPDATE user SET mark = %d WHERE uid='%d'"%(marks,int(uid)))#increase user's marks
+	conn.commit()
 	c.execute("insert into answer values('%d','%d','%s','%s')"%(int(qid),int(uid),data,t))
 	conn.commit()
-	c.execute("UPDATE question SET num_done = %d WHERE qid = %d"%(num_done,int(qid)))
+	c.execute("UPDATE question SET num_done = %d WHERE qid = %d"%(num_done,int(qid)))#increase num_done
 	conn.commit()
 	conn.close()
 

@@ -42,19 +42,16 @@ def get_cookie():
 			result = c.fetchone()
 			cuid=result[0]
 			if result is not None:
-				c.execute("SELECT uname FROM user WHERE uid = ?", (result[0],))
-				username = c.fetchone()	
+				c.execute("SELECT uname, mark FROM user WHERE uid = ?", (result[0],))
+				username = c.fetchone()
 				htmlTop()
-				nav_bar2(username[0])
-			else:				
+				nav_bar2(username[0], username[1])
+			else:
 				goToLogin()
 			conn.close()
 		except:
 			goToLogin()
 			sys.exit(0)
-
-
-
 
 def nav_bar1():
 	print('<div class="navbar">')
@@ -70,7 +67,8 @@ def nav_bar1():
 		''')
 	print('</div>')
 
-def nav_bar2(uname):
+
+def nav_bar2(uname, mark):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
@@ -78,9 +76,11 @@ def nav_bar2(uname):
 			<a href="myQuestionnaire.py">My Questionnaire</a>
 			<a href="search.py">Search</a>
 			<a href="createquestion.py">Create Questionnaire</a>
+			<a href="myDraft.py">My Draft</a>
 		</div>
 		<div class="right">''')
 	print("<a>"+uname+"</a>")
+	print("<a>Mark:"+str(mark)+"</a>")
 	print('''
 			<a href="logout.py">Logout</a>
 		</div>
@@ -125,6 +125,7 @@ def printQ():
 	print("<input name='qid' value='%d' hidden>"%qid)
 	print("<input name='qNum' value='%d' hidden>"%num_question)
 	print("<input name='uid' value='%d' hidden>"%cuid)
+	print("<input name='startT' value='%s' hidden>"%(datetime.datetime.now().time().strftime('%H:%M:%S')))
 	#start printing questions
 	for i in range(num_question):		
 		print("<h4><strong>%d. %s</strong></h4>"%(i+1,q[i]["question"]))
