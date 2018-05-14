@@ -19,8 +19,17 @@ def htmlTop():
 	print("<meta charset='utf-8'/>")
 	print("<title>prj</title>")
 	print('<link type="text/css" rel="stylesheet" href="/css/style.css" />')
+	print('<script src="/js/bootstrap.min.js"></script>')
+	print('<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" />')
+	print('<link type="text/css" rel="stylesheet" href="/css/style1.css" />')
 	print('<script src="/js/jquery-3.3.1.min.js"></script>')
 	print('<script src="/js/category.js"></script>')
+	print('''<style>
+		.hv{border-style: dashed;border-radius:15px;background-color:#F0FFF0;border-color:#2F4F4F}
+		.hv:hover{
+			border-style:solid;
+		}
+		</style>''')
 	print("</head>")
 	print("<body>")
 
@@ -82,19 +91,9 @@ def DB(uid):
 	#print(i)
 		if (i[0] not in qid):
 			mystr = "onclick='myfun("+str(i[0])+")'"
-			if i[7] == "art":
-				print("<div class='art' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-			elif i[7] == "business":
-				print("<div class='business' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-			elif i[7] == "education":
-				print("<div class='education' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-			elif i[7] == "engineering":
-				print("<div class='engineering' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-			elif i[7] == "science":
-				print("<div class='science' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-			else:
-				print("<div class='social' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")	
-			print("<hr>")
+			
+			print("<div class='"+i[7]+" container hv' "+mystr+">"+"<p style='font-size:24px'><b>%s</b>&nbsp<i style='font-size:17px'>%s</i></p><p style='font-size:21px'>%s</p></div>"%(str(i[5]),str(i[7]),str(i[6])))
+			print('<br>')
 		
 	conn.close()
 
@@ -108,31 +107,17 @@ def DB2():
 	for i in rownum:
 		#print(i)
 		mystr = "onclick='myfun("+str(i[0])+")'"
-		if i[7] == "art":
-			print("<div class='art' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-		elif i[7] == "business":
-			print("<div class='business' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-		elif i[7] == "education":
-			print("<div class='education' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-		elif i[7] == "engineering":
-			print("<div class='engineering' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-		elif i[7] == "science":
-			print("<div class='science' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")
-		else:
-			print("<div class='social' "+mystr+">"+str(i[5])+str(i[6])+str(i[7])+"</div>")	
-		print("<hr>")
+		print("<div class='"+i[7]+" container hv' "+mystr+">"+"<p style='font-size:24px'><b>%s</b>&nbsp<i style='font-size:17px'>%s</i></p><p style='font-size:21px'>%s</p></div>"%(str(i[5]),str(i[7]),str(i[6])))
+		print('<br>')
 
 	conn.close()
 				
-
-
-
 def nav_bar1():
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
-			<a href="index.py">Home</a>
-			<a href="search.py">Search</a>
+			<a href="index.py" style="font-family:monospace;font-size:16px;background-color:#00cc7a"><b>Quick Ques</b></a>
+			
 		</div>
 		<div class="right">
 			<a href="login.py">Sign in</a>
@@ -141,14 +126,13 @@ def nav_bar1():
 		''')
 	print('</div>')
 
-
 def nav_bar2(uname, mark):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
-			<a href="index.py">Home</a>
+			<a href="index.py" style="font-family:monospace;font-size:14px;background-color:#00cc7a"><b>Quick Ques</b></a>
 			<a href="myQuestionnaire.py">My Questionnaire</a>
-			<a href="search.py">Search</a>
+			
 			<a href="createquestion.py">Create Questionnaire</a>
 			<a href="myDraft.py">My Draft</a>
 		</div>
@@ -162,26 +146,20 @@ def nav_bar2(uname, mark):
 	print('</div>')
 
 def questionnaire():
-	print('''
+	print('''<center>
 		<div class="category">
-			<button id="All">All</button>
-			<button id="Art">Art</button>
-			<button id="Business">Business</button>
-			<button id="Education">Education</button>
-			<button id="Engineering">Engineering</button>
-			<button id="Science">Science</button>
-			<button id="Social">Social</button>			
+			<button class='btn btn-success btn-lg' id="All">All</button>
+			<button class='btn btn-success btn-lg' id="Art">Art</button>
+			<button class='btn btn-success btn-lg' id="Business">Business</button>
+			<button class='btn btn-success btn-lg' id="Education">Education</button>
+			<button class='btn btn-success btn-lg' id="Engineering">Engineering</button>
+			<button class='btn btn-success btn-lg' id="Science">Science</button>
+			<button class='btn btn-success btn-lg' id="Social">Social</button>			
 		</div>
-		<div class="content">
-			username	title	description		category
-			<br>
-			<br>
-			<hr>
-		</div>
+		</center>
+		<br>
 		''')
 
-
-			
 
 htmlTop()
 questionnaire()
