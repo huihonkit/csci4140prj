@@ -9,6 +9,10 @@ import urlparse
 import subprocess
 import Cookie
 import math
+import datetime
+import json
+import sys
+from pylab import figure, axes, pie, title, show
 cgitb.enable()
 
 def htmlTop():
@@ -28,7 +32,6 @@ def htmlTail():
 	print("</html>")
 
 def get_cookie():
-	global myusername, myuserid
 	if 'HTTP_COOKIE' in os.environ:
 		cookie_string = os.environ.get('HTTP_COOKIE')
 		c = Cookie.SimpleCookie()
@@ -40,11 +43,9 @@ def get_cookie():
 			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
 			result = c.fetchone()
 			if result is not None:
-				c.execute("SELECT uname FROM user WHERE uid = ?", (result[0],))
-				myuserid = result[0]
+				c.execute("SELECT uname, mark FROM user WHERE uid = ?", (result[0],))
 				username = c.fetchone()
-				nav_bar2(username[0])
-				myusername = username[0]
+				nav_bar2(username[0], username[1])
 			else:
 				nav_bar1()
 			conn.close()
@@ -66,7 +67,7 @@ def nav_bar1():
 	print('</div>')
 
 
-def nav_bar2(uname):
+def nav_bar2(uname, mark):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
@@ -74,9 +75,11 @@ def nav_bar2(uname):
 			<a href="myQuestionnaire.py">My Questionnaire</a>
 			<a href="search.py">Search</a>
 			<a href="createquestion.py">Create Questionnaire</a>
+			<a href="myDraft.py">My Draft</a>
 		</div>
 		<div class="right">''')
 	print("<a>"+uname+"</a>")
+	print("<a>Mark:"+str(mark)+"</a>")
 	print('''
 			<a href="logout.py">Logout</a>
 		</div>
@@ -86,13 +89,140 @@ def nav_bar2(uname):
 def body():
 	form = cgi.FieldStorage()
 	qid = int(form.getvalue('targetQ'))
-	print('''
-		<br><br>
-		<center><h3>Stat page, qid=%d</h3></center>
-		
-		<br>
-		''') % (qid)
+	conn = sqlite3.connect('test.db')
+	c = conn.cursor()
+	c.execute('select * from question where qid="%d"' % qid) 
+	question = c.fetchone()
+	uid, num_question, title, des, numdone, q = question[1], question[2], question[5], question[6], question[9], json.loads(question[8])
+	print("<br><br><h1><center>Statistics for \"%s\"</center></h1><br>" % title)
+	print("<span style=\"font-size:24px\"><center>%d people finished this questionnaire</center></span><br>" % numdone)
+	#print("<pre class='well' style='font-size:20px'>%s</pre><br>" % des)
 
+	print("<div class='stat'>")
+
+	for i in range(num_question):		
+		print("<span style=\"font-size:24px\">%d. %s (%s)</span><br>" % (i+1, q[i]["question"], q[i]["type"]))
+
+		if q[i]["type"]=="mc": #print multiple question	
+			labels = []
+			values = []		
+			for option in q[i]["answer"]:
+				labels.append(option)			
+				c.execute('select answer from answer where qid="%d"' % qid)
+				ans = c.fetchall()
+				howmanyofthisoption = 0
+				for row in ans:
+					tempans = json.loads(row[0])
+					#print("%s" % tempans[i]["answer"])
+					if tempans[i]["answer"] == option:
+						howmanyofthisoption = howmanyofthisoption + 1
+				if numdone == 0 or howmanyofthisoption == 0:
+					tempstat = 0
+				else: 
+					tempstat = (float(howmanyofthisoption) / float(numdone))
+				percentage = float(tempstat) * 100.0
+				values.append(howmanyofthisoption)
+				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
+				labels_tuple = tuple(labels)
+				figure(1, figsize=(6, 6))
+				ax = axes([0.1, 0.1, 0.8, 0.8])
+				explode = (0, 0.05, 0, 0)
+				pie(values, explode=explode, labels=labels_tuple, autopct='%1.1f%%', shadow=True)
+				title('Raining Hogs and Dogs', bbox={'facecolor': '0.8', 'pad': 5})
+				savefig('foo.png', bbox_inches='tight')
+				print("<img src='foo.png'><br>")
+
+		elif q[i]["type"]=="shortq":
+			print("<span style=\"font-size:18px\">All answers:</span><br>")
+			c.execute('select answer from answer where qid="%d"' % qid)
+			ans = c.fetchall()
+			for row in ans:
+				tempans = json.loads(row[0])
+				print("<span style=\"font-size:18px\">\" %s \"</span><br>" % (tempans[i]["answer"]))
+
+		elif q[i]["type"]=="longq":
+			print("<span style=\"font-size:18px\">All answers:</span><br>")
+			c.execute('select answer from answer where qid="%d"' % qid)
+			ans = c.fetchall()
+			for row in ans:
+				tempans = json.loads(row[0])
+				print("<span style=\"font-size:18px\">\"%s \"</span><br>" % (tempans[i]["answer"]))
+
+		elif q[i]["type"]=="checkbox":
+			total = 0			
+			for option in q[i]["answer"]:			
+				c.execute('select answer from answer where qid="%d"' % qid)
+				ans = c.fetchall()
+				for row in ans:
+					tempans = json.loads(row[0])
+					#print("%s" % tempans[i]["answer"])
+					if tempans[i]["answer"] == option:
+						total = total + 1
+					for cboption in tempans[i]["answer"]:
+						if cboption == option:
+							total = total + 1
+
+			for option in q[i]["answer"]:			
+				c.execute('select answer from answer where qid="%d"' % qid)
+				ans = c.fetchall()
+				howmanyofthisoption = 0
+				for row in ans:
+					tempans = json.loads(row[0])
+					#print("%s" % tempans[i]["answer"])
+					if tempans[i]["answer"] == option:
+						howmanyofthisoption = howmanyofthisoption + 1
+					for cboption in tempans[i]["answer"]:
+						if cboption == option:
+							howmanyofthisoption = howmanyofthisoption + 1
+				if numdone == 0 or howmanyofthisoption == 0 or total == 0:
+					tempstat = 0
+				else: 
+					tempstat = (float(howmanyofthisoption) / float(total))
+				percentage = float(tempstat) * 100.0
+				#percentage = (float(howmanyofthisoption) / float(total)) * 100.0
+				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
+		
+		elif q[i]["type"]=="dropdown":
+			for option in q[i]["answer"]:			
+				c.execute('select answer from answer where qid="%d"' % qid)
+				ans = c.fetchall()
+				howmanyofthisoption = 0
+				for row in ans:
+					tempans = json.loads(row[0])
+					#print("%s" % tempans[i]["answer"])
+					if tempans[i]["answer"] == option:
+						howmanyofthisoption = howmanyofthisoption + 1
+				if numdone == 0 or howmanyofthisoption == 0:
+					tempstat = 0
+				else: 
+					tempstat = (float(howmanyofthisoption) / float(numdone))
+				percentage = float(tempstat) * 100.0
+				print("<span style=\"font-size:18px\">%d people chose option \"%s\" (%.1f%%)</span><br>" % (howmanyofthisoption, option, percentage))
+
+		elif q[i]["type"]=="ratingscale":
+			minr = int(q[i]["scale"][0])
+			maxr = int(q[i]["scale"][1])
+			numofr = maxr - minr + 1
+			#print("%d %d %d<br>" %(minr, maxr, numofr))
+			for j in xrange(0, numofr):
+				c.execute('select answer from answer where qid="%d"' % qid)
+				ans = c.fetchall()
+				howmanyofthisrating = 0
+				for row in ans:
+					tempans = json.loads(row[0])
+					#print("%s" % tempans[i]["answer"])
+					if int(tempans[i]["answer"]) == (minr + j):
+						howmanyofthisrating = howmanyofthisrating + 1
+				if numdone == 0 or howmanyofthisrating == 0:
+					tempstat = 0
+				else: 
+					tempstat = (float(howmanyofthisrating) / float(numdone))
+				percentage = float(tempstat) * 100.0
+				#percentage = (float(howmanyofthisrating) / float(numdone)) * 100.0
+				print("<span style=\"font-size:18px\">%d people rated %s (%.1f%%)</span><br>" % (howmanyofthisoption, (minr + j), percentage))
+
+		print("<br><br>")
+	print("</div>")
 
 htmlTop()
 get_cookie()

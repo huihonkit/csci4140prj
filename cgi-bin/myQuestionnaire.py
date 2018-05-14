@@ -33,7 +33,7 @@ def htmlTail():
 	print("</html>")
 
 def get_cookie():
-	global myusername, myuserid
+	global myuserid, myusername
 	if 'HTTP_COOKIE' in os.environ:
 		cookie_string = os.environ.get('HTTP_COOKIE')
 		c = Cookie.SimpleCookie()
@@ -45,11 +45,11 @@ def get_cookie():
 			c.execute("SELECT uid FROM session WHERE sid = ?", (data,))
 			result = c.fetchone()
 			if result is not None:
-				c.execute("SELECT uname FROM user WHERE uid = ?", (result[0],))
 				myuserid = result[0]
+				c.execute("SELECT uname, mark FROM user WHERE uid = ?", (result[0],))
 				username = c.fetchone()
-				nav_bar2(username[0])
 				myusername = username[0]
+				nav_bar2(username[0], username[1])
 			else:
 				nav_bar1()
 			conn.close()
@@ -71,7 +71,7 @@ def nav_bar1():
 	print('</div>')
 
 
-def nav_bar2(uname):
+def nav_bar2(uname, mark):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
@@ -79,14 +79,35 @@ def nav_bar2(uname):
 			<a href="myQuestionnaire.py">My Questionnaire</a>
 			<a href="search.py">Search</a>
 			<a href="createquestion.py">Create Questionnaire</a>
+			<a href="myDraft.py">My Draft</a>
 		</div>
 		<div class="right">''')
 	print("<a>"+uname+"</a>")
+	print("<a>Mark:"+str(mark)+"</a>")
 	print('''
 			<a href="logout.py">Logout</a>
 		</div>
 		''')
 	print('</div>')
+
+def checkpost():
+	form = cgi.FieldStorage()
+	if form:
+		target = int(form.getvalue('addmktarget'))
+		targetaddmk = int(form.getvalue('addmk'))
+		conn = sqlite3.connect('test.db')
+		c = conn.cursor()
+		c.execute('select use_mark from question where qid=%d' % (target))
+		tempmark = c.fetchone()
+		newmk = tempmark[0] + targetaddmk
+		c.execute('update question set use_mark=%d where qid=%d' % (newmk, target))
+		conn.commit()
+
+		c.execute('select mark from user where uid=%d' % (myuserid))
+		tempumark = c.fetchone()
+		newumk = tempumark[0] - targetaddmk
+		c.execute('update user set mark=%d where uid=%d' % (newumk, myuserid))
+		conn.commit()
 
 def body():
 	print('''
@@ -95,27 +116,23 @@ def body():
 		''') % (myusername)
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
-	c.execute('''CREATE TABLE IF NOT EXISTS question
-		(qid integer PRIMARY KEY, uid integer, num_question integer, use_mark integer, time date, title text, des text, category text, question json)''')
-	
-	# c.execute('insert into question(qid, uid, title, category) values (1, 1, "first", "CS")')
-	# conn.commit()
-	# c.execute('insert into question(qid, uid, title, category) values (2, 1, "first1", "CS")')
-	# conn.commit()
-	# c.execute('insert into question(qid, uid, title, category) values (3, 1, "first2", "CS")')
-	# conn.commit()
-
-
-
+	c.execute('select mark from user where uid=%d' % (myuserid)) 
+	temp = c.fetchone()
+	maxmk = temp[0]
 	c.execute('select * from question where uid=%d' % (myuserid)) 
 	Qs = c.fetchall()
 	for row in Qs:
-		print('<a href="http://localhost:8080/cgi-bin/Qstat.py?targetQ=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><i>&nbsp;&nbsp;%s&nbsp;&nbsp;&nbsp;%d people done</i><br><span style="font-size:24px">&nbsp;&nbsp;%s</span></div><br>' % (row[0], row[7], row[9], row[5]))
+		print('<div><a href="http://localhost:8080/cgi-bin/Qstat.py?targetQ=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><i>&nbsp;&nbsp;%s</i>&nbsp;&nbsp;&nbsp;&nbsp;%d people done, used %d marks<br><span style="font-size:24px">&nbsp;&nbsp;%s</span></div></a><div class="stat"><form action="/cgi-bin/myQuestionnaire.py" method="post" id="changemk%d"><label for="user_lic">Add marks to the above questionnaire: </label><input name="addmktarget" value="%d" hidden><input id="user_lic" type="number" name="addmk" min="0" max="%d" step="1" value ="0"/></form><button type="submit" form="changemk%d" value="Submit">Submit</button></div></div><br>' % (row[0], row[7], row[9], row[3], row[5], row[0], row[0], maxmk, row[0]))
 
 
 
 htmlTop()
 get_cookie()
+
+checkpost()
+
+get_cookie()
+
 
 body()
 
