@@ -74,7 +74,7 @@ def draft(uid):
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
 	for record in c.execute("SELECT * FROM draft WHERE uid = ?", (uid,)):
-		print('<a href="createquestion.py?did=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><br><span style="font-size:24px">Title: %s</span></div><br>' % (record[0], record[5]))
+		print('<a href="createquestion.py?did=%d" style="text-decoration : none; color : #000000;"><div class="Qblock"><p style="font-size:24px">Draft: %s</p></div>' % (record[0], record[5]))
 	conn.close()
 	print("</div>")
 
