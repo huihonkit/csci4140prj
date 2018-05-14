@@ -102,7 +102,7 @@ def DB(uid):
 def DB2():
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
-	rownum = c.execute("SELECT * FROM question")
+	rownum = c.execute("SELECT * FROM question ORDER BY use_mark DESC")
 					
 	for i in rownum:
 		#print(i)
