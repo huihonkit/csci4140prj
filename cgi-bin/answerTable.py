@@ -27,8 +27,7 @@ def createTable():
 	conn = sqlite3.connect('test.db')
 	c = conn.cursor()
 	form=cgi.FieldStorage()
-	#qid = form.getvalue('targetQ')
-	qid=4 #******************************need to delete*****************************************88
+	qid = form.getvalue('targetQ')	
 	c.execute("SELECT question from question where qid='%d'"%(int(qid)))
 	questions=c.fetchone()
 	questions=json.loads(questions[0])
