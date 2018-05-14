@@ -11,6 +11,9 @@ import Cookie
 import math
 import datetime
 import json
+from sklearn.externals import joblib
+import numpy as np
+from sklearn.linear_model import LogisticRegression
 
 cgitb.enable()
 
@@ -61,6 +64,23 @@ def saveAnswer():
 	conn.commit()
 	c.execute("UPDATE question SET num_done = %d WHERE qid = %d"%(num_done,int(qid)))#increase num_done
 	conn.commit()
+
+	second = t.total_seconds()
+	c.execute("SELECT est from question where qid='%d'"%(int(qid)))
+	est = c.fetchone()[0]
+	est = int(round(((second - est)/est) *100))
+	print(est)
+	c.execute("SELECT credit from user where uid='%d'"%(int(uid)))
+	credit = c.fetchone()[0]
+	feature = np.array([[est,credit]])
+	model = joblib.load('save/model.pkl')
+	predict = model.predict(feature)
+	credit = credit + 1
+	c.execute("UPDATE user SET credit = %d WHERE uid='%d'"%(credit,int(uid)))
+	conn.commit()
+	c.execute("INSERT INTO predict(qid, uid, predict) VALUES (?, ?, ?)", (int(qid), int(uid), predict[0]))
+	conn.commit()
+	
 	conn.close()
 
 if __name__ == "__main__":
