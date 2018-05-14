@@ -37,7 +37,7 @@ def nav_bar1():
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
-			<a href="index.py">Home</a>
+			<a href="index.py" style="font-family:monospace;font-size:16px;background-color:#00cc7a"><b>Quick Ques</b></a>
 			<a href="search.py">Search</a>
 		</div>
 		<div class="right">
@@ -47,12 +47,11 @@ def nav_bar1():
 		''')
 	print('</div>')
 
-
 def nav_bar2(uname, mark):
 	print('<div class="navbar">')
 	print('''
 		<div class="left">
-			<a href="index.py">Home</a>
+			<a href="index.py" style="font-family:monospace;font-size:14px;background-color:#00cc7a"><b>Quick Ques</b></a>
 			<a href="myQuestionnaire.py">My Questionnaire</a>
 			<a href="search.py">Search</a>
 			<a href="createquestion.py">Create Questionnaire</a>
