@@ -45,13 +45,19 @@ def createTable():
 	print('''</tr>
     	</thead>''')
 	
-	c.execute("SELECT answer from answer where qid='%d'"%(int(qid)))
+	c.execute("SELECT answer, uid from answer where qid='%d'"%(int(qid)))
 	i=1
 	answers=c.fetchall()
 	print('<tbody>')
-	for answer in answers:		
+	for answer in answers:
+		uid = answer[1]
+		c.execute("SELECT predict from predict where qid='%d' and uid='%d'"%(int(qid), int(uid)))
+		predict = c.fetchone()
 		answer=json.loads(answer[0])						
-		print('<tr>')
+		if(predict[0] == 0):
+			print('<tr class="danger">')
+		else:
+			print('<tr>')
 		print('<td>%d</td>'%i)
 		for a in answer:
 			print('<td>%s</td>'%a["answer"])
