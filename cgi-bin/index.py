@@ -19,6 +19,7 @@ def htmlTop():
 	print("<meta charset='utf-8'/>")
 	print("<title>prj</title>")
 	print('<link type="text/css" rel="stylesheet" href="/css/style.css" />')
+	print('<script src="/js/jquery-3.3.1.min.js"></script>')
 	print('<script src="/js/category.js"></script>')
 	print("</head>")
 	print("<body>")
@@ -98,6 +99,8 @@ def questionnaire():
 		</div>
 		<div class="content">
 			questionnaire
+			<br>
+			<br>
 			<hr>
 		</div>
 		''')
@@ -108,18 +111,19 @@ def DB():
 	rownum = c.execute("SELECT * FROM question")
 	for i in rownum:
 		#print(i)
+		mystr = "onclick='myfun("+str(i[0])+")'"
 		if i[7] == "art":
-			print("<div class='art'>"+str(i)+"</div>")
+			print("<div class='art' "+mystr+">"+str(i[5])+str(i[6])+"</div>")
 		elif i[7] == "business":
-			print("<div class='business'>"+str(i)+"</div>")
+			print("<div class='business'>"+str(i[5])+str(i[6])+"</div>")
 		elif i[7] == "education":
-			print("<div class='education'>"+str(i)+"</div>")
+			print("<div class='education'>"+str(i[5])+str(i[6])+"</div>")
 		elif i[7] == "engineering":
-			print("<div class='engineering'>"+str(i)+"</div>")
+			print("<div class='engineering'>"+str(i[5])+str(i[6])+"</div>")
 		elif i[7] == "science":
-			print("<div class='science'>"+str(i)+"</div>")
+			print("<div class='science'>"+str(i[5])+str(i[6])+"</div>")
 		else:
-			print("<div class='social'>"+str(i)+"</div>")	
+			print("<div class='social'>"+str(i[5])+str(i[6])+"</div>")	
 		print("<hr>")
 	conn.close()
 

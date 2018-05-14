@@ -186,6 +186,15 @@ function social(){
 	}
 }
 
+function myfun(qid){
+	var $form = $("<form action='/cgi-bin/printQuestion.py' method='post'</form>");
+	var $t = $("<input type='text' name='qid'>");
+	$t.val(qid);
+	$form.append($t);
+	$(document.body).append($form);
+	$form.submit();
+}
+
 
 document.addEventListener("DOMContentLoaded", function(event){
 	var art1 = document.getElementById("Art");
