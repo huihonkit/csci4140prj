@@ -19,6 +19,7 @@ def htmlTop():
 	print("<meta charset='utf-8'/>")
 	print("<title>prj</title>")
 	print('<link type="text/css" rel="stylesheet" href="/css/style.css" />')
+	print('<script src="/js/category.js"></script>')
 	print("</head>")
 	print("<body>")
 
@@ -88,19 +89,43 @@ def nav_bar2(uname, mark):
 def questionnaire():
 	print('''
 		<div class="category">
-			<button>Art</button>
-			<button>Business</button>
-			<button>Education</button>
-			<button>Engineering</button>
-			<button>Science</button>
-			<button>Social</button>			
+			<button id="Art">Art</button>
+			<button id="Business">Business</button>
+			<button id="Education">Education</button>
+			<button id="Engineering">Engineering</button>
+			<button id="Science">Science</button>
+			<button id="Social">Social</button>			
 		</div>
 		<div class="content">
 			questionnaire
+			<hr>
 		</div>
 		''')
-	
+
+def DB():
+	conn = sqlite3.connect('test.db')
+	c = conn.cursor()
+	rownum = c.execute("SELECT * FROM question")
+	for i in rownum:
+		#print(i)
+		if i[7] == "art":
+			print("<div class='art'>"+str(i)+"</div>")
+		elif i[7] == "business":
+			print("<div class='business'>"+str(i)+"</div>")
+		elif i[7] == "education":
+			print("<div class='education'>"+str(i)+"</div>")
+		elif i[7] == "engineering":
+			print("<div class='engineering'>"+str(i)+"</div>")
+		elif i[7] == "science":
+			print("<div class='science'>"+str(i)+"</div>")
+		else:
+			print("<div class='social'>"+str(i)+"</div>")	
+		print("<hr>")
+	conn.close()
+
+
 htmlTop()
 get_cookie()
 questionnaire()
+DB()
 htmlTail()
