@@ -78,7 +78,7 @@ def saveAnswer():
 	credit = credit + 1
 	c.execute("UPDATE user SET credit = %d WHERE uid='%d'"%(credit,int(uid)))
 	conn.commit()
-	c.execute("INSERT INTO predict(qid, uid, predict) VALUES (?, ?, ?)", (int(qid), int(uid), predict[0]))
+	c.execute("INSERT INTO predict(qid, uid, predict) VALUES (?, ?, ?)", (int(qid), int(uid), int(predict[0])))
 	conn.commit()
 	
 	conn.close()
