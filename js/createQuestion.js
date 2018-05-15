@@ -77,7 +77,7 @@ function check(){
             }
             else{
                 array.push(dict);
-                est = est + 300;
+                est = est + 60;
             }
             if(flag == 0){
                 break;
