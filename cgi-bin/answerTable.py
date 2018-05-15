@@ -61,7 +61,7 @@ def createTable():
 		print('<td>%d</td>'%i)
 		for a in answer:
 			print('<td>%s</td>'%a["answer"])
-		c.execute("SELECT time from answer where qid='%d'"%(int(qid)))
+		c.execute("SELECT time from answer where qid='%d' and uid='%d'"%(int(qid), int(uid)))
 		t = c.fetchone()
 		print('<td>%s</td>'%t[0])
 		print('</tr>')
