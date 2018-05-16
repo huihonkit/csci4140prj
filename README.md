@@ -1,4 +1,4 @@
-# csci4140prj
+# CSCI4140 Project "Quick Ques"
 
 How to run the project?
 
@@ -19,4 +19,4 @@ How to run the project?
 
    4.1 Run python app.py
 
-5) Go to http://localhost:8080/cgi-bin/index.py
+5) Go to http://localhost:8080/cgi-bin/index.py (Internet connection is required for some features)
