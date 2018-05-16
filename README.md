@@ -1,5 +1,7 @@
 # CSCI4140 Project "Quick Ques"
 
+Repository URL: https://github.com/huihonkit/csci4140prj.git
+
 How to run the project?
 
 1) Install python
